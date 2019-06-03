@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import * as Api from './api/Api';
+import * as submissions from './api/Contracts'
 
 const App: React.FC = () => {
+  const [outcome, setOutcome] = useState(submissions.Outcome.fail);
+
+  Api.GetScoreboards().then(response => {
+      console.log(response);
+
+      console.log(outcome == submissions.Outcome.success);
+  });
+
   return (
     <div className="App">
       <header className="App-header">
@@ -17,6 +27,7 @@ const App: React.FC = () => {
           rel="noopener noreferrer"
         >
           Learn React
+          { outcome }
         </a>
       </header>
     </div>
