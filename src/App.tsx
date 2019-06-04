@@ -31,7 +31,7 @@ const App: React.FC = () => {
           { outcome }
         </a>
       </header>
-      <Simulation />
+      <Simulation speed={50} y={200} radius={50} />
     </div>
   );
 }

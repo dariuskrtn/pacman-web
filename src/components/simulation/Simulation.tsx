@@ -2,14 +2,15 @@ import React from "react";
 import { Renderer } from "./Renderer";
 
 interface SimulationProps {
-
+    speed: number;
+    radius: number;
+    y: number;
 }
 
 interface SimulationState {
     x: number;
-    y: number;
-    r: number;
     frame: number;
+    lastTime: number;
 }
 
 export class Simulation extends React.Component<SimulationProps, SimulationState> {
@@ -20,15 +21,13 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
         super(props);
         this.state = {
             frame: 0,
-            r: 10,
+            lastTime: Date.now(),
             x: 100,
-            y: 100,
         };
-        this.update = this.update.bind(this);
     }
 
     componentDidMount() {
-        this.rAF = requestAnimationFrame(this.update);
+        this.rAF = requestAnimationFrame(() => this.update(0));
     }
 
     componentWillUnmount() {
@@ -37,16 +36,26 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
         }
     }
 
-    update() {
-        this.setState(prevState => ({
-            frame: prevState.frame + 1,
-            r: 10 * Math.abs(Math.sin(prevState.frame*0.1)+5),
-        }));
-        this.rAF = requestAnimationFrame(this.update);
+    update(dt: number) {
+        const now = Date.now();
+        const nextDt = (now - this.state.lastTime) / 1000;
+        const {radius, y, speed} = this.props;
+        this.setState(prevState => {
+            const dx = speed * dt;
+            let nextX = prevState.x + dx;
+            if (nextX >= 800 + radius) { nextX = -radius; }
+            return {
+                frame: prevState.frame + 1,
+                lastTime: Date.now(),
+                x: nextX,
+            };
+        });
+        this.rAF = requestAnimationFrame(() => this.update(nextDt));
     }
 
     render() {
-        const {x, y, r} = this.state;
-        return <Renderer circleX={x} circleY={y} radius={r} color="red" />;
+        const {x} = this.state;
+        const {radius, y} = this.props;
+        return <Renderer circleX={x} circleY={y} radius={radius} color="red" />;
     }
 }
