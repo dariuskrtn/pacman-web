@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import * as Api from './api/Api';
-import * as submissions from './api/Contracts'
+import * as submissions from './api/Contracts';
+import './App.css';
+import { Simulation } from './components/simulation/Simulation';
+import logo from './logo.svg';
 
 const App: React.FC = () => {
   const [outcome, setOutcome] = useState(submissions.Outcome.fail);
@@ -30,6 +31,7 @@ const App: React.FC = () => {
           { outcome }
         </a>
       </header>
+      <Simulation />
     </div>
   );
 }
