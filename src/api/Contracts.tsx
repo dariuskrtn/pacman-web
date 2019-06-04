@@ -1,4 +1,4 @@
-    //Requests---------------------------------------------
+    // Requests---------------------------------------------
     export interface ProgramRequest {
       user: string;
       password: string;
@@ -8,28 +8,28 @@
     export interface AuthenticateRequest {
       user: string;
       password: string;
-    }    
-    
-    //Responses--------------------------------------------
-    
+    }
+
+    // Responses--------------------------------------------
+
     export interface SubmissionDetailsResponse {
       initialState: Level;
-    steps: Step[];
-    outcome: Outcome;
+      steps: Step[];
+      outcome: Outcome;
     }
-    
+
     export interface SubmissionsResponse {
       submissions: Submission[];
       levelClosed: boolean;
       level: Level;
     }
-    
+
     export interface ScoreboardResponse {
       scoreboards: Scoreboard[];
     }
-    
-    
-    //Entities---------------------------------------------
+
+
+    // Entities---------------------------------------------
     export interface Program {
       rules: Rule[];
     }
@@ -42,7 +42,7 @@
       nextMove: Move;
       nextState: RuleState;
     }
-    
+
     export interface Scoreboard {
       title: string;
       entries: ScoreboardRow[];
@@ -52,7 +52,7 @@
       solved: number;
       tieBreaker: string;
     }
-    
+
     export interface Submission {
     id: number;
     user: string;
@@ -76,7 +76,7 @@
     objects: Entity[];
     }
 
-    //Enums-----------------------------------------------------------
+    // Enums-----------------------------------------------------------
 
     export enum Outcome {
     success = "success",
@@ -94,7 +94,7 @@
     up = "up",
     right = "right",
     left = "left",
-    wait = "wait"
+    wait = "wait",
     }
 
     export enum EntityState {
@@ -106,7 +106,7 @@
     export enum EntityKind {
     berry = "berry",
     ghost = "ghost",
-    pacman = "pacman"
+    pacman = "pacman",
     }
 
     export enum RuleCell {
@@ -130,7 +130,7 @@
 
     export enum RuleBerry {
       taken = "taken",
-      notTaken = "notTaken"
+      notTaken = "notTaken",
     }
 
     export enum SubmitResponse {

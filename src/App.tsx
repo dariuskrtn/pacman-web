@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import * as Api from './api/Api';
-import * as submissions from './api/Contracts';
-import './App.css';
-import { Simulation } from './components/simulation/Simulation';
-import logo from './logo.svg';
+import React, { useState } from "react";
+import * as Api from "./api/Api";
+import * as submissions from "./api/Contracts";
+import "./App.css";
+import { Simulation } from "./components/simulation/Simulation";
+import logo from "./logo.svg";
 
 const App: React.FC = () => {
   const [outcome, setOutcome] = useState(submissions.Outcome.fail);
@@ -11,7 +11,7 @@ const App: React.FC = () => {
   Api.GetScoreboards().then(response => {
       console.log(response);
 
-      console.log(outcome == submissions.Outcome.success);
+      console.log(outcome === submissions.Outcome.success);
   });
 
   return (
@@ -28,12 +28,12 @@ const App: React.FC = () => {
           rel="noopener noreferrer"
         >
           Learn React
-          { outcome }
+          {outcome}
         </a>
       </header>
       <Simulation speed={50} y={200} radius={50} />
     </div>
   );
-}
+};
 
 export default App;
