@@ -41,6 +41,7 @@ export interface Rule {
     right: RuleCell | null;
     nextMove: Move;
     nextState: RuleState;
+    berry: RuleBerry | null;
 }
 
 export interface Scoreboard {

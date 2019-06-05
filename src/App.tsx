@@ -4,12 +4,17 @@ import * as submissions from "./api/Contracts";
 import "./App.css";
 import { Simulation } from "./components/simulation/Simulation";
 import spritesheet from "./assets/spritesheet_blackeye.png";
+import logo from "./logo.svg";
+import { submissionDetails, submissionDetails2 } from "./mocks/apiResponses";
+import { SubmitProgram } from "./components/submitProgram/SubmitProgram";
 
 const sheet = new Image();
 
 var currSubmission = 0;
 var submissionCount = 0;
 var submissionsRequested = false;
+
+
 
 const App: React.FC = () => {
     const [outcome, setOutcome] = useState(submissions.Outcome.fail);
@@ -64,6 +69,7 @@ const App: React.FC = () => {
     return (
         <div className="App">
             {simulation}
+            <SubmitProgram username="hello" password="pass" />
         </div>
     );
 };
