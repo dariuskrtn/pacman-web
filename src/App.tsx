@@ -19,26 +19,26 @@ const App: React.FC = () => {
     const [simulation, setSimulation] = useState((<div></div>));
 
     function simulateNextSubmission() {
-      if (currSubmission === submissionCount) {
-        return;
-      }
-      Api.GetSubmissionDetails(currSubmission).then(submissionDetails => {
-        setSimulation(<div></div>);
-        setSimulation(
-        <div>
-          <div>{currSubmission}</div>
-          <Simulation
-          initialState={submissionDetails.initialState}
-          speed={2}
-          steps={submissionDetails.steps}
-          onSimulationEnd={() => simulateNextSubmission()}
-          spritesheet={sprites}
-          />
-        </div>
-          );
-          
+        if (currSubmission === submissionCount) {
+            return;
+        }
+        Api.GetSubmissionDetails(currSubmission).then(submissionDetails => {
+            setSimulation(<div></div>);
+            setSimulation(
+                <div>
+                    <div>{currSubmission}</div>
+                    <Simulation
+                        initialState={submissionDetails.initialState}
+                        speed={2}
+                        steps={submissionDetails.steps}
+                        onSimulationEnd={() => simulateNextSubmission()}
+                        spritesheet={sprites}
+                    />
+                </div>
+            );
+
         });
-      currSubmission++;
+        currSubmission++;
     }
 
     // Load resources
@@ -47,11 +47,11 @@ const App: React.FC = () => {
         setSprites(sheet);
 
         if (!isLoading && !submissionsRequested) {
-          submissionsRequested = true;
-          Api.GetSubmissions().then(submissions => {
-            submissionCount = submissions.submissions.length;
-            simulateNextSubmission();
-          });
+            submissionsRequested = true;
+            Api.GetSubmissions().then(submissions => {
+                submissionCount = submissions.submissions.length;
+                simulateNextSubmission();
+            });
 
         }
     }

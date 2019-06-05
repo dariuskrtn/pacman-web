@@ -30,7 +30,8 @@ export const PacmanWait = new Sprite(
         { x: 5, y: 4 },
         { x: 6, y: 4 }
     ],
-    [0, 1, 2, 3, 2, 1, 0, 4, 5, 6, 5, 4]
+    [0, 1, 2, 3, 2, 1, 0, 4, 5, 6, 5, 4],
+    0.3
 );
 
 export const GhostLeft = new Sprite(
