@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AuthenticateRequest, ProgramRequest, ScoreboardResponse, SubmissionDetailsResponse, SubmissionsResponse, SubmitResponse } from "./Contracts";
 
-const address = "http://46.101.162.155:8000";
+const address = "";
 
 export async function GetSubmissions(): Promise<SubmissionsResponse> {
     return (await axios.get(address + "/api/submissions")).data;

@@ -37,5 +37,6 @@
     "devDependencies": {
         "tslint": "^5.17.0",
         "tslint-react": "^4.0.0"
-    }
+    },
+    "proxy": "http://46.101.162.155:8000"
 }
