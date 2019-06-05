@@ -98,7 +98,7 @@ export const renderEntity = (
     const x = cellSize * entity.col;
     const y = cellSize * entity.row;
     const sprite = ENTITY_SPRITES.filter(s => s.kind === entity.kind)
-        .filter(s => s.move === entity.currentMove)
+        .filter(s => s.move === entity.intendedMove)
         .map(s => (berryTaken ? s.spriteIfBerryIsTaken : s.sprite))[0];
     sprite.render(ctx, spritesheet, frame, x, y, cellSize, cellSize);
 };

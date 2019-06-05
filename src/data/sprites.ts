@@ -2,22 +2,26 @@ import { Sprite } from "../utils/Sprite";
 
 export const PacmanLeft = new Sprite(
     [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }],
-    [0, 1, 2, 3, 2, 1]
+    [0, 1, 2, 3, 2, 1],
+    0.3
 );
 
 export const PacmanUp = new Sprite(
     [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }],
-    [0, 1, 2, 3, 2, 1]
+    [0, 1, 2, 3, 2, 1],
+    0.3
 );
 
 export const PacmanDown = new Sprite(
     [{ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }],
-    [0, 1, 2, 3, 2, 1]
+    [0, 1, 2, 3, 2, 1],
+    0.3
 );
 
 export const PacmanRight = new Sprite(
     [{ x: 0, y: 3 }, { x: 1, y: 3 }, { x: 2, y: 3 }, { x: 3, y: 3 }],
-    [0, 1, 2, 3, 2, 1]
+    [0, 1, 2, 3, 2, 1],
+    0.3
 );
 
 export const PacmanWait = new Sprite(
@@ -36,22 +40,26 @@ export const PacmanWait = new Sprite(
 
 export const GhostLeft = new Sprite(
     [{ x: 4, y: 0 }, { x: 5, y: 0 }, { x: 6, y: 0 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const GhostRight = new Sprite(
     [{ x: 4, y: 1 }, { x: 5, y: 1 }, { x: 6, y: 1 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const GhostUp = new Sprite(
     [{ x: 4, y: 2 }, { x: 5, y: 2 }, { x: 6, y: 2 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const GhostDown = new Sprite(
     [{ x: 4, y: 3 }, { x: 5, y: 3 }, { x: 6, y: 3 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const GhostWait = new Sprite(
@@ -70,22 +78,26 @@ export const Berry = new Sprite([{ x: 8, y: 4 }], [0]);
 
 export const DeadGhostLeft = new Sprite(
     [{ x: 8, y: 0 }, { x: 9, y: 0 }, { x: 10, y: 0 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const DeadGhostRight = new Sprite(
     [{ x: 8, y: 1 }, { x: 9, y: 1 }, { x: 10, y: 1 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const DeadGhostUp = new Sprite(
     [{ x: 8, y: 2 }, { x: 9, y: 2 }, { x: 10, y: 2 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const DeadGhostDown = new Sprite(
     [{ x: 8, y: 3 }, { x: 9, y: 3 }, { x: 10, y: 3 }],
-    [0, 1, 0, 2]
+    [0, 1, 0, 2],
+    0.2
 );
 
 export const DeadGhostWait = new Sprite(

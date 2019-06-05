@@ -68,6 +68,7 @@ export interface Entity {
     row: number;
     col: number;
     currentMove: Move;
+    intendedMove: Move;
     state: EntityState;
     kind: EntityKind;
 }
