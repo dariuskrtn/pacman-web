@@ -4,7 +4,7 @@ import * as submissions from "./api/Contracts";
 import "./App.css";
 import { Simulation } from "./components/simulation/Simulation";
 import logo from "./logo.svg";
-import { submissionDetails } from "./mocks/apiResponses";
+import { submissionDetails, submissionDetails2 } from "./mocks/apiResponses";
 
 const App: React.FC = () => {
     const [outcome, setOutcome] = useState(submissions.Outcome.fail);
@@ -33,9 +33,9 @@ const App: React.FC = () => {
                 </a>
             </header>
             <Simulation
-                initialState={submissionDetails.initialState}
-                speed={1}
-                steps={submissionDetails.steps}
+                initialState={submissionDetails2.initialState}
+                speed={2}
+                steps={submissionDetails2.steps}
                 onSimulationEnd={() => alert("DONE")}
             />
         </div>

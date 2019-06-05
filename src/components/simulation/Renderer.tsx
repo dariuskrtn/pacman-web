@@ -1,6 +1,7 @@
 import React from "react";
 import { Canvas } from "./Canvas";
 import { Level, Cell, Entity, EntityKind } from "../../api/Contracts";
+import { renderEntity } from "./renderingUtils";
 
 interface RendererProps {
     cells: Cell[][];
@@ -65,25 +66,9 @@ export class Renderer extends React.Component<RendererProps, never> {
     }
 
     drawObjects(ctx: CanvasRenderingContext2D, cellSize: number, objects: Entity[]) {
+        const berryTaken = objects.every(e => e.kind !== EntityKind.berry);
         for (const object of objects) {
-            if (object.kind === EntityKind.pacman) {
-                ctx.fillStyle = "yellow";
-            } else if (object.kind === EntityKind.berry) {
-                ctx.fillStyle = "red";
-            } else if (object.kind === EntityKind.ghost) {
-                ctx.fillStyle = "blue";
-            } else {
-                console.error(`Unknown entity kind ${object.kind}`);
-            }
-            ctx.strokeStyle = "black";
-            const x = cellSize * object.col + cellSize / 2;
-            const y = cellSize * object.row + cellSize / 2;
-            const r = 0.8 * cellSize / 2;
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.stroke();
-            ctx.closePath();
+            renderEntity(ctx, cellSize, object, berryTaken, this.props.frame);
         }
     }
 
