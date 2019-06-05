@@ -1,10 +1,18 @@
 {
-    "extends": ["tslint:latest", "tslint-react"],
+    "extends": [
+        "tslint:latest",
+        "tslint-react"
+    ],
     "rules": {
-        "interface-name": [true, "never-prefix"],
+        "interface-name": [
+            true,
+            "never-prefix"
+        ],
         "arrow-parens": false,
         "jsx-no-multiline-js": false,
         "member-access": false,
-        "jsx-no-lambda": false
+        "jsx-no-lambda": false,
+        "object-literal-sort-keys": false,
+        "ordered-imports": false
     }
 }

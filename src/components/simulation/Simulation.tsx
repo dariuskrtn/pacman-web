@@ -1,16 +1,20 @@
 import React from "react";
 import { Renderer } from "./Renderer";
+import { Level, Step } from "../../api/Contracts";
+import { moveEntities } from "./logic";
 
 interface SimulationProps {
+    initialState: Level;
+    steps: Step[];
     speed: number;
-    radius: number;
-    y: number;
+    onSimulationEnd: () => void;
 }
 
 interface SimulationState {
-    x: number;
-    frame: number;
+    currentStep: number;
+    stepProgress: number;
     lastTime: number;
+    currentFrame: number;
 }
 
 export class Simulation extends React.Component<SimulationProps, SimulationState> {
@@ -20,9 +24,10 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
     constructor(props: SimulationProps) {
         super(props);
         this.state = {
-            frame: 0,
             lastTime: Date.now(),
-            x: 100,
+            currentStep: 0,
+            stepProgress: 0,
+            currentFrame: 0,
         };
     }
 
@@ -37,9 +42,9 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
     }
 
     update(dt: number) {
-        const now = Date.now();
+        /*const now = Date.now();
         const nextDt = (now - this.state.lastTime) / 1000;
-        const {radius, y, speed} = this.props;
+        const { radius, y, speed } = this.props;
         this.setState(prevState => {
             const dx = speed * dt;
             let nextX = prevState.x + dx;
@@ -50,12 +55,18 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
                 x: nextX,
             };
         });
+        this.rAF = requestAnimationFrame(() => this.update(nextDt));*/
+        // const newState = moveEntities(null, dt);
+        const now = Date.now();
+        const nextDt = (now - this.state.lastTime) / 1000;
+        this.setState({
+            lastTime: Date.now(),
+            currentFrame: this.state.currentFrame + 1,
+        });
         this.rAF = requestAnimationFrame(() => this.update(nextDt));
     }
 
     render() {
-        const {x} = this.state;
-        const {radius, y} = this.props;
-        return <Renderer circleX={x} circleY={y} radius={radius} color="red" />;
+        return <Renderer level={this.props.initialState} />;
     }
 }
