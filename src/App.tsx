@@ -1,28 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Api from "./api/Api";
 import * as submissions from "./api/Contracts";
 import "./App.css";
 import { Simulation } from "./components/simulation/Simulation";
-import { submissionDetails, submissionDetails2 } from "./mocks/apiResponses";
 import spritesheet from "./assets/spritesheet.png";
 
 const sheet = new Image();
+
+var currSubmission = 0;
+var submissionCount = 0;
+var submissionsRequested = false;
 
 const App: React.FC = () => {
     const [outcome, setOutcome] = useState(submissions.Outcome.fail);
     const [isLoading, setIsLoading] = useState(true);
     const [sprites, setSprites] = useState(new Image());
 
-    Api.GetScoreboards().then(response => {
-        console.log(response);
+    const [simulation, setSimulation] = useState((<div></div>));
 
-        console.log(outcome === submissions.Outcome.success);
-    });
+    function simulateNextSubmission() {
+      if (currSubmission === submissionCount) {
+        return;
+      }
+      Api.GetSubmissionDetails(currSubmission).then(submissionDetails => {
+        setSimulation(<div></div>);
+        setSimulation(
+        <div>
+          <div>{currSubmission}</div>
+          <Simulation
+          initialState={submissionDetails.initialState}
+          speed={2}
+          steps={submissionDetails.steps}
+          onSimulationEnd={() => simulateNextSubmission()}
+          spritesheet={sprites}
+          />
+        </div>
+          );
+          
+        });
+      currSubmission++;
+    }
 
     // Load resources
     sheet.onload = () => {
         setIsLoading(false);
         setSprites(sheet);
+
+        if (!isLoading && !submissionsRequested) {
+          submissionsRequested = true;
+          Api.GetSubmissions().then(submissions => {
+            submissionCount = submissions.submissions.length;
+            simulateNextSubmission();
+          });
+
+        }
     }
     sheet.src = spritesheet;
 
@@ -32,16 +63,7 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <header className="App-header">
-                {outcome}
-            </header>
-            <Simulation
-                initialState={submissionDetails2.initialState}
-                speed={2}
-                steps={submissionDetails2.steps}
-                onSimulationEnd={() => alert("DONE")}
-                spritesheet={sprites}
-            />
+            {simulation}
         </div>
     );
 };
