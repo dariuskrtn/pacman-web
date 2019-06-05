@@ -3,7 +3,9 @@ import { Canvas } from "./Canvas";
 import { Level, Cell, Entity, EntityKind } from "../../api/Contracts";
 
 interface RendererProps {
-    level: Level;
+    cells: Cell[][];
+    entities: Entity[];
+    frame: number;
 }
 
 interface GridInfo {
@@ -23,16 +25,23 @@ export class Renderer extends React.Component<RendererProps, never> {
 
     loadCanvasContext(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
-        this.gridInfo = this.calculateGridInfo(ctx, this.props.level.cells);
+        this.gridInfo = this.calculateGridInfo(ctx, this.props.cells);
     }
 
     draw(ctx: CanvasRenderingContext2D, gridInfo: GridInfo) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.save();
         ctx.translate(gridInfo.offsetX, gridInfo.offsetY);
-        this.drawGrid(ctx, gridInfo.sideLength, this.props.level.cells);
-        this.drawObjects(ctx, gridInfo.sideLength, this.props.level.objects);
+        this.drawGrid(ctx, gridInfo.sideLength, this.props.cells);
+        this.drawObjects(ctx, gridInfo.sideLength, this.props.entities);
         ctx.restore();
+        this.showFrameCount(ctx);
+    }
+
+    showFrameCount(ctx: CanvasRenderingContext2D) {
+        ctx.font = "20px Georgia";
+        ctx.fillStyle = "red";
+        ctx.fillText(this.props.frame.toString(), ctx.canvas.width - 50, 20);
     }
 
     drawGrid(ctx: CanvasRenderingContext2D, cellSize: number, cells: Cell[][]) {
@@ -66,12 +75,14 @@ export class Renderer extends React.Component<RendererProps, never> {
             } else {
                 console.error(`Unknown entity kind ${object.kind}`);
             }
+            ctx.strokeStyle = "black";
             const x = cellSize * object.col + cellSize / 2;
             const y = cellSize * object.row + cellSize / 2;
             const r = 0.8 * cellSize / 2;
             ctx.beginPath();
             ctx.arc(x, y, r, 0, 2 * Math.PI);
             ctx.fill();
+            ctx.stroke();
             ctx.closePath();
         }
     }

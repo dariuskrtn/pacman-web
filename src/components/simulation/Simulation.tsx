@@ -1,6 +1,6 @@
 import React from "react";
 import { Renderer } from "./Renderer";
-import { Level, Step } from "../../api/Contracts";
+import { Level, Step, Entity } from "../../api/Contracts";
 import { moveEntities } from "./logic";
 
 interface SimulationProps {
@@ -15,6 +15,7 @@ interface SimulationState {
     stepProgress: number;
     lastTime: number;
     currentFrame: number;
+    entitiesState: Entity[];
 }
 
 export class Simulation extends React.Component<SimulationProps, SimulationState> {
@@ -28,6 +29,7 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
             currentStep: 0,
             stepProgress: 0,
             currentFrame: 0,
+            entitiesState: props.initialState.objects,
         };
     }
 
@@ -42,31 +44,37 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
     }
 
     update(dt: number) {
-        /*const now = Date.now();
-        const nextDt = (now - this.state.lastTime) / 1000;
-        const { radius, y, speed } = this.props;
-        this.setState(prevState => {
-            const dx = speed * dt;
-            let nextX = prevState.x + dx;
-            if (nextX >= 800 + radius) { nextX = -radius; }
-            return {
-                frame: prevState.frame + 1,
-                lastTime: Date.now(),
-                x: nextX,
-            };
-        });
-        this.rAF = requestAnimationFrame(() => this.update(nextDt));*/
-        // const newState = moveEntities(null, dt);
         const now = Date.now();
         const nextDt = (now - this.state.lastTime) / 1000;
+        if (this.state.stepProgress >= 1) {
+            const newStep = this.state.currentStep + 1;
+            if (newStep >= this.props.steps.length) {
+                this.props.onSimulationEnd();
+                return;
+            }
+            this.setState({
+                currentStep: newStep,
+                stepProgress: 0,
+            });
+        }
+        const newStepProgress = Math.min(1, this.state.stepProgress + dt * this.props.speed);
         this.setState({
             lastTime: Date.now(),
             currentFrame: this.state.currentFrame + 1,
+            stepProgress: newStepProgress,
+            entitiesState: moveEntities(this.props.steps[this.state.currentStep].objects, newStepProgress)
         });
+        // TODO: check for collisions (entity might die in the middle of the move)
         this.rAF = requestAnimationFrame(() => this.update(nextDt));
     }
 
     render() {
-        return <Renderer level={this.props.initialState} />;
+        return (
+            <Renderer
+                cells={this.props.initialState.cells}
+                entities={this.state.entitiesState}
+                frame={this.state.currentFrame}
+            />
+        );
     }
 }

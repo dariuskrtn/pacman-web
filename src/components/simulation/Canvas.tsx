@@ -14,6 +14,7 @@ export class Canvas extends React.Component<CanvasProps, never> {
             <canvas
                 height={600}
                 width={800}
+                style={{ border: "1px dashed black" }}
                 ref={r => {
                     if (!r) { return null; }
                     const ctx = r.getContext("2d");
