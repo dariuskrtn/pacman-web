@@ -33,6 +33,7 @@ export class Renderer extends React.Component<RendererProps, never> {
 
     draw(ctx: CanvasRenderingContext2D, gridInfo: GridInfo) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.imageSmoothingEnabled = false;
         ctx.save();
         ctx.translate(gridInfo.offsetX, gridInfo.offsetY);
         this.drawGrid(ctx, gridInfo.sideLength, this.props.cells);
