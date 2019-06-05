@@ -30,12 +30,13 @@ export const PacmanWait = new Sprite(
         { x: 1, y: 4 },
         { x: 2, y: 4 },
         { x: 3, y: 4 },
-        { x: 4, y: 4 },
-        { x: 5, y: 4 },
-        { x: 6, y: 4 }
+        { x: 4, y: 4 }
+        // { x: 5, y: 4 }, // use these for the white-eye spritesheet
+        // { x: 6, y: 4 }
     ],
-    [0, 1, 2, 3, 2, 1, 0, 4, 5, 6, 5, 4],
-    0.3
+    // [0, 1, 2, 3, 2, 1, 0, 4, 5, 6, 5, 4],
+    [0, 1, 2, 1, 0, 3, 4, 3],
+    0.1
 );
 
 export const GhostLeft = new Sprite(

@@ -3,7 +3,7 @@ import * as Api from "./api/Api";
 import * as submissions from "./api/Contracts";
 import "./App.css";
 import { Simulation } from "./components/simulation/Simulation";
-import spritesheet from "./assets/spritesheet.png";
+import spritesheet from "./assets/spritesheet_blackeye.png";
 
 const sheet = new Image();
 
