@@ -55,9 +55,51 @@ export const GhostDown = new Sprite(
 );
 
 export const GhostWait = new Sprite(
-    [{ x: 7, y: 1 }, { x: 7, y: 2 }, { x: 7, y: 3 }, { x: 7, y: 4 }],
-    [0, 1, 0, 2, 3, 2],
+    [
+        { x: 7, y: 0 },
+        { x: 7, y: 1 },
+        { x: 7, y: 2 },
+        { x: 7, y: 3 },
+        { x: 7, y: 4 }
+    ],
+    [0, 1, 2, 1, 0, 3, 4, 3],
     0.1
 );
 
-export const Berry = new Sprite([{ x: 7, y: 0 }], [0]);
+export const Berry = new Sprite([{ x: 8, y: 4 }], [0]);
+
+export const DeadGhostLeft = new Sprite(
+    [{ x: 8, y: 0 }, { x: 9, y: 0 }, { x: 10, y: 0 }],
+    [0, 1, 0, 2]
+);
+
+export const DeadGhostRight = new Sprite(
+    [{ x: 8, y: 1 }, { x: 9, y: 1 }, { x: 10, y: 1 }],
+    [0, 1, 0, 2]
+);
+
+export const DeadGhostUp = new Sprite(
+    [{ x: 8, y: 2 }, { x: 9, y: 2 }, { x: 10, y: 2 }],
+    [0, 1, 0, 2]
+);
+
+export const DeadGhostDown = new Sprite(
+    [{ x: 8, y: 3 }, { x: 9, y: 3 }, { x: 10, y: 3 }],
+    [0, 1, 0, 2]
+);
+
+export const DeadGhostWait = new Sprite(
+    [
+        { x: 11, y: 0 },
+        { x: 11, y: 1 },
+        { x: 11, y: 2 },
+        { x: 11, y: 3 },
+        { x: 11, y: 4 }
+    ],
+    [0, 1, 2, 1, 0, 3, 4, 3],
+    0.1
+);
+
+export const CellEmpty = new Sprite([{ x: 9, y: 4 }], [0]);
+
+export const CellWall = new Sprite([{ x: 10, y: 4 }], [0]);

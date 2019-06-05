@@ -2,6 +2,7 @@ import React from "react";
 import { Canvas } from "./Canvas";
 import { Level, Cell, Entity, EntityKind } from "../../api/Contracts";
 import { renderEntity } from "./renderingUtils";
+import { CellEmpty, CellWall } from "../../data/sprites";
 
 interface RendererProps {
     cells: Cell[][];
@@ -53,14 +54,19 @@ export class Renderer extends React.Component<RendererProps, never> {
                 const cell = cells[r][c];
                 const y = r * cellSize;
                 const x = c * cellSize;
-                ctx.strokeStyle = "gray";
+                /*ctx.strokeStyle = "gray";
                 if (cell === Cell.empty) {
-                    ctx.fillStyle = "white";
-                } else {
                     ctx.fillStyle = "black";
+                } else {
+                    ctx.fillStyle = "blue";
                 }
                 ctx.fillRect(x, y, cellSize, cellSize);
-                ctx.strokeRect(x, y, cellSize, cellSize);
+                // ctx.strokeRect(x, y, cellSize, cellSize);*/
+                if (cell === Cell.empty) {
+                    CellEmpty.render(ctx, this.props.spritesheet, 0, x, y, cellSize, cellSize);
+                } else {
+                    CellWall.render(ctx, this.props.spritesheet, 0, x, y, cellSize, cellSize);
+                }
             }
         }
         ctx.restore();
