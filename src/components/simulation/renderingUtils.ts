@@ -1,80 +1,88 @@
-import { Entity, EntityKind } from "../../api/Contracts";
+import { Entity, EntityKind, Move } from "../../api/Contracts";
+import {
+    Berry,
+    GhostDown,
+    GhostLeft,
+    GhostRight,
+    GhostUp,
+    GhostWait,
+    PacmanDown,
+    PacmanLeft,
+    PacmanRight,
+    PacmanUp,
+    PacmanWait
+} from "../../data/sprites";
+
+const ENTITY_SPRITES = [
+    {
+        kind: EntityKind.pacman,
+        move: Move.left,
+        sprite: PacmanLeft
+    },
+    {
+        kind: EntityKind.pacman,
+        move: Move.right,
+        sprite: PacmanRight
+    },
+    {
+        kind: EntityKind.pacman,
+        move: Move.up,
+        sprite: PacmanUp
+    },
+    {
+        kind: EntityKind.pacman,
+        move: Move.down,
+        sprite: PacmanDown
+    },
+    {
+        kind: EntityKind.pacman,
+        move: Move.wait,
+        sprite: PacmanWait
+    },
+    {
+        kind: EntityKind.ghost,
+        move: Move.left,
+        sprite: GhostLeft
+    },
+    {
+        kind: EntityKind.ghost,
+        move: Move.right,
+        sprite: GhostRight
+    },
+    {
+        kind: EntityKind.ghost,
+        move: Move.up,
+        sprite: GhostUp
+    },
+    {
+        kind: EntityKind.ghost,
+        move: Move.down,
+        sprite: GhostDown
+    },
+    {
+        kind: EntityKind.ghost,
+        move: Move.wait,
+        sprite: GhostWait
+    },
+    {
+        kind: EntityKind.berry,
+        move: Move.wait,
+        sprite: Berry
+    }
+];
 
 export const renderEntity = (
     ctx: CanvasRenderingContext2D,
+    spritesheet: HTMLImageElement,
     cellSize: number,
     entity: Entity,
     berryTaken: boolean,
     frame: number
-) =>
-    entity.kind === EntityKind.pacman
-        ? renderPacman(ctx, cellSize, entity, berryTaken, frame)
-        : entity.kind === EntityKind.berry
-        ? renderBerry(ctx, cellSize, entity, frame)
-        : entity.kind === EntityKind.ghost
-        ? renderGhost(ctx, cellSize, entity, berryTaken, frame)
-        : undefined;
-
-const renderPacman = (
-    ctx: CanvasRenderingContext2D,
-    cellSize: number,
-    pacman: Entity,
-    berryTaken: boolean,
-    frame: number
 ) => {
-    if (berryTaken) {
-        ctx.fillStyle = "orange";
-    } else {
-        ctx.fillStyle = "yellow";
-    }
-    ctx.strokeStyle = "black";
-    const x = cellSize * pacman.col + cellSize / 2;
-    const y = cellSize * pacman.row + cellSize / 2;
-    const r = (0.8 * cellSize) / 2;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
-};
-
-const renderBerry = (
-    ctx: CanvasRenderingContext2D,
-    cellSize: number,
-    berry: Entity,
-    frame: number
-) => {
-    ctx.fillStyle = "red";
-    ctx.strokeStyle = "black";
-    const x = cellSize * berry.col + cellSize / 2;
-    const y = cellSize * berry.row + cellSize / 2;
-    const r = (0.8 * cellSize) / 2;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
-};
-
-const renderGhost = (
-    ctx: CanvasRenderingContext2D,
-    cellSize: number,
-    ghost: Entity,
-    berryTaken: boolean,
-    frame: number
-) => {
-    if (berryTaken) {
-        ctx.fillStyle = "gray";
-    } else {
-        ctx.fillStyle = "blue";
-    }
-    ctx.strokeStyle = "black";
-    const x = cellSize * ghost.col + cellSize / 2;
-    const y = cellSize * ghost.row + cellSize / 2;
-    const r = (0.8 * cellSize) / 2;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
+    const x = cellSize * entity.col;
+    const y = cellSize * entity.row;
+    const sprite = ENTITY_SPRITES.filter(s => s.kind === entity.kind)
+        .filter(s => s.move === entity.currentMove)
+        .map(s => s.sprite)[0];
+    sprite.render(ctx, spritesheet, frame, x, y, cellSize, cellSize);
 };

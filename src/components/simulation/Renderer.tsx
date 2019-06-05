@@ -7,6 +7,7 @@ interface RendererProps {
     cells: Cell[][];
     entities: Entity[];
     frame: number;
+    spritesheet: HTMLImageElement;
 }
 
 interface GridInfo {
@@ -68,7 +69,7 @@ export class Renderer extends React.Component<RendererProps, never> {
     drawObjects(ctx: CanvasRenderingContext2D, cellSize: number, objects: Entity[]) {
         const berryTaken = objects.every(e => e.kind !== EntityKind.berry);
         for (const object of objects) {
-            renderEntity(ctx, cellSize, object, berryTaken, this.props.frame);
+            renderEntity(ctx, this.props.spritesheet, cellSize, object, berryTaken, this.props.frame);
         }
     }
 

@@ -8,6 +8,7 @@ interface SimulationProps {
     steps: Step[];
     speed: number;
     onSimulationEnd: () => void;
+    spritesheet: HTMLImageElement;
 }
 
 interface SimulationState {
@@ -74,6 +75,7 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
                 cells={this.props.initialState.cells}
                 entities={this.state.entitiesState}
                 frame={this.state.currentFrame}
+                spritesheet={this.props.spritesheet}
             />
         );
     }
