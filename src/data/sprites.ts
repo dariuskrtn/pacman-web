@@ -55,7 +55,8 @@ export const GhostDown = new Sprite(
 
 export const GhostWait = new Sprite(
     [{ x: 7, y: 1 }, { x: 7, y: 2 }, { x: 7, y: 3 }, { x: 7, y: 4 }],
-    [0, 1, 0, 2, 3, 2]
+    [0, 1, 0, 2, 3, 2],
+    0.1
 );
 
 export const Berry = new Sprite([{ x: 7, y: 0 }], [0]);

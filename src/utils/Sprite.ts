@@ -8,10 +8,16 @@ interface AnimationFrame {
 export class Sprite {
     frames: AnimationFrame[];
     animation: number[];
+    animationSpeed: number;
 
-    constructor(frames: AnimationFrame[], animation: number[]) {
+    constructor(
+        frames: AnimationFrame[],
+        animation: number[],
+        animationSpeed = 0.5
+    ) {
         this.frames = frames;
         this.animation = animation;
+        this.animationSpeed = animationSpeed;
     }
 
     getFrame(frameNum: number) {
@@ -27,7 +33,7 @@ export class Sprite {
         w: number,
         h: number
     ) {
-        const sprite = this.getFrame(Math.floor(frame * 0.4));
+        const sprite = this.getFrame(Math.floor(frame * this.animationSpeed));
         const sx = sprite.x * GRID_SIZE;
         const sy = sprite.y * GRID_SIZE;
 
