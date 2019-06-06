@@ -4,11 +4,13 @@ import spritesheet from "../../assets/spritesheet.png";
 import * as api from "../../api/Api";
 import { SubmissionQueue, QueueItem, QueueItemState } from "../SubmissionQueue";
 import { Simulation } from "../simulation/Simulation";
+import { ScoreboardView } from "./ScoreboardView";
 
 interface SubmissionsViewState {
     spritesheet?: HTMLImageElement;
     queueItems: QueueItem[];
     level?: Level;
+    levelClosed: boolean;
     simulatingItemIndex: number;
     activeTimeout?: NodeJS.Timeout;
 }
@@ -20,6 +22,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     state: SubmissionsViewState = {
         queueItems: [],
         simulatingItemIndex: 0,
+        levelClosed: false
     };
 
     async componentDidMount() {
@@ -34,7 +37,8 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         }));
         this.setState({
             queueItems,
-            level: submissionsResponse.level
+            level: submissionsResponse.level,
+            levelClosed: submissionsResponse.levelClosed
         }, () => {
             this.setSimulationIndex(0);
             this.loadSubmissionDetails();
@@ -145,6 +149,10 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         }
         if (!this.state.level) {
             return <p>Loading submissions...</p>;
+        }
+        // TODO: show scoreboard only on closed levels?
+        if (/*this.state.levelClosed &&*/ this.state.simulatingItemIndex >= this.state.queueItems.length) {
+            return <ScoreboardView />;
         }
         const currentQueueItem =
             this.state.simulatingItemIndex < this.state.queueItems.length

@@ -9,5 +9,8 @@ export const Header = () => (
         <li>
             <Link to="/submit">Pateikti</Link>
         </li>
+        <li>
+            <Link to="/scoreboard">Rezultatai</Link>
+        </li>
     </ul>
 );
