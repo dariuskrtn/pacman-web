@@ -34,7 +34,7 @@ const App: React.FC = () => {
                     <div>{currSubmission}</div>
                     <Simulation
                         initialState={submissionDetails.initialState}
-                        speed={2}
+                        speed={1}
                         steps={submissionDetails.steps}
                         onSimulationEnd={() => simulateNextSubmission()}
                         spritesheet={sprites}

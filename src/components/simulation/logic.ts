@@ -5,7 +5,7 @@ export const moveEntities = (
     progress: number
 ): Entity[] => {
     return entities
-        .filter(entity => entity.state === EntityState.alive)
+        .filter(entity => !shouldDie(entity, progress))
         .map(entity => {
             switch (entity.currentMove) {
                 case Move.left:
@@ -20,4 +20,14 @@ export const moveEntities = (
                     return entity;
             }
         });
+};
+
+const shouldDie = (entity: Entity, progress: number) => {
+    if (entity.state === EntityState.alive) {
+        return false;
+    }
+    if (entity.state === EntityState.diesInMiddle) {
+        return progress >= 0.5;
+    }
+    return false;
 };
