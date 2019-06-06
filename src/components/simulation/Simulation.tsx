@@ -19,19 +19,32 @@ interface SimulationState {
     entitiesState: Entity[];
 }
 
+const EMPTY_STATE = (props: SimulationProps) => ({
+    lastTime: Date.now(),
+    currentStep: 0,
+    stepProgress: 0,
+    currentFrame: 0,
+    entitiesState: props.initialState.objects,
+});
+
 export class Simulation extends React.Component<SimulationProps, SimulationState> {
 
     rAF?: number;
 
     constructor(props: SimulationProps) {
         super(props);
-        this.state = {
-            lastTime: Date.now(),
-            currentStep: 0,
-            stepProgress: 0,
-            currentFrame: 0,
-            entitiesState: props.initialState.objects,
-        };
+        this.state = EMPTY_STATE(props);
+    }
+
+    componentWillReceiveProps(newProps: SimulationProps) {
+        if (!newProps || !this.props) {
+            return;
+        }
+        if (newProps.initialState !== this.props.initialState) {
+            // Start new simulation
+            this.setState(EMPTY_STATE(newProps));
+            this.rAF = requestAnimationFrame(() => this.update(0));
+        }
     }
 
     componentDidMount() {
