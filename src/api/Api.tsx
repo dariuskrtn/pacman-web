@@ -16,9 +16,17 @@ export async function GetScoreboards(): Promise<ScoreboardResponse> {
 }
 
 export async function SubmitProgram(program: ProgramRequest): Promise<SubmitResponse> {
-    return (await axios.post(address + "/api/submit", JSON.stringify(program))).data;
+    return (await axios.post(address + "/api/submit", JSON.stringify(program), {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })).data;
 }
 
 export async function Authenticate(auth: AuthenticateRequest): Promise<SubmitResponse> {
-    return (await axios.post(address + "/api/authenticate", JSON.stringify(auth))).data;
+    return (await axios.post(address + "/api/authenticate", JSON.stringify(auth), {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })).data;
 }

@@ -57,7 +57,7 @@ export class StateButton extends React.Component<StateButtonProps, StateButtonSt
 
     render() {
       return (
-        <a href="#" className="btn btn-sq btn-success" onClick={this.changeRuleCurrentState.bind(this)}>
+        <a className="btn btn-sq btn-success" onClick={this.changeRuleCurrentState.bind(this)}>
             {this.state.currentState === null ? "?" : this.state.currentRender}
         </a>
       );

@@ -1,6 +1,7 @@
 import React from "react";
 import { RuleComponent } from "./RuleComponent";
 import { Move, RuleState, Rule } from "../../api/Contracts";
+import * as Api from "./../../api/Api";
 
 interface SubmitProgramProps {
     username: string,
@@ -8,8 +9,15 @@ interface SubmitProgramProps {
 }
 
 interface SubmitProgramState {
-  rules: Rule[]
+  rules: KeyedRule[]
 }
+
+interface KeyedRule {
+  key: number;
+  rule: Rule;
+}
+
+let counter = 0;
 
 export class SubmitProgram extends React.Component<SubmitProgramProps, SubmitProgramState> {
 
@@ -21,16 +29,19 @@ export class SubmitProgram extends React.Component<SubmitProgramProps, SubmitPro
     }
 
     getEmptyRule() {
-        return {
-            currentState:  RuleState.b,
-            down: null,
-            up: null,
-            left: null,
-            right: null,
-            nextMove: Move.wait,
-            nextState: RuleState.a,
-            berry: null,
+      return {
+        key: counter++,
+        rule: {
+          currentState:  null,
+          down: null,
+          up: null,
+          left: null,
+          right: null,
+          nextMove: Move.wait,
+          nextState: RuleState.a,
+          berry: null,
         }
+      }
     }
 
     addRule() {
@@ -42,9 +53,11 @@ export class SubmitProgram extends React.Component<SubmitProgramProps, SubmitPro
     }
 
     removeRule(id: number) {
-      //TODO: fix this
-      const rules = this.state.rules;
-      rules.splice(id, 1);
+      console.log(id);
+      const rules = [...this.state.rules];
+      
+      rules.splice(rules.findIndex(r => r.key === id), 1);
+
       this.setState({
         rules,
       });
@@ -52,10 +65,27 @@ export class SubmitProgram extends React.Component<SubmitProgramProps, SubmitPro
 
     updateRule(rule: Rule, id: number) {
       const rules = this.state.rules;
-      rules[id] = rule;
+      const idd = rules.findIndex(r => r.key === id);
+      rules[idd] = {
+        key: rules[idd].key,
+        rule: rule,
+      }
       this.setState({
         rules,
       });
+      console.log(rules);
+    }
+
+    submitProgram() {
+      Api.SubmitProgram({
+        user: this.props.username,
+        password: this.props.password,
+        program: {
+          rules: this.state.rules.map(ruleKey => ruleKey.rule)
+        }
+      }).then((response: any) => {
+        console.log(response);
+      })
     }
 
     render() {
@@ -64,14 +94,14 @@ export class SubmitProgram extends React.Component<SubmitProgramProps, SubmitPro
           <div className="row">
             <div className="col-md-4" />
             <div className="col-md-4">
-              {this.state.rules.map((rule, i) => {
+              {this.state.rules.map(rulee => {
                 return (
-                <div key={i}>
+                <div key={rulee.key}>
                   <RuleComponent
-                    key={i}
-                    rule={this.getEmptyRule()}
-                    onChange={rule => this.updateRule(rule, i)}
-                    onDelete={() => this.removeRule(i)}
+                    key={rulee.key}
+                    rule={rulee.rule}
+                    onChange={rule => this.updateRule(rule, rulee.key)}
+                    onDelete={() => this.removeRule(rulee.key)}
                   />
                   <br/>
                 </div>
@@ -83,7 +113,8 @@ export class SubmitProgram extends React.Component<SubmitProgramProps, SubmitPro
           <div className="row">
             <div className="col-md-5" />
             <div className="col-md-1">
-              <button onClick={() => this.addRule()} type="button" className="btn btn-primary">Add Rule</button>
+              <button onClick={() => this.addRule()} type="button" className="btn btn-primary">Add Rule</button><br/>
+              <button onClick={() => this.submitProgram()} type="button" className="btn btn-success">Submit</button>
             </div>
           </div>
         </div>

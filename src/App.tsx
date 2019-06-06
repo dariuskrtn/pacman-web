@@ -34,7 +34,7 @@ const App: React.FC = () => {
                     <div>{currSubmission}</div>
                     <Simulation
                         initialState={submissionDetails.initialState}
-                        speed={1}
+                        speed={10}
                         steps={submissionDetails.steps}
                         onSimulationEnd={() => simulateNextSubmission()}
                         spritesheet={sprites}
@@ -69,7 +69,7 @@ const App: React.FC = () => {
     return (
         <div className="App">
             {simulation}
-            <SubmitProgram username="hello" password="pass" />
+            <SubmitProgram username="labas" password="rytas" />
         </div>
     );
 };
