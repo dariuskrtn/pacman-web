@@ -1,4 +1,5 @@
-const GRID_SIZE = 100;
+const GRID_SIZE = 104;
+const PADDING = 2;
 
 interface AnimationFrame {
     x: number;
@@ -34,9 +35,10 @@ export class Sprite {
         h: number
     ) {
         const sprite = this.getFrame(Math.floor(frame * this.animationSpeed));
-        const sx = sprite.x * GRID_SIZE;
-        const sy = sprite.y * GRID_SIZE;
+        const sx = sprite.x * GRID_SIZE + PADDING;
+        const sy = sprite.y * GRID_SIZE + PADDING;
+        const sideLength = GRID_SIZE - 2 * PADDING;
 
-        ctx.drawImage(spritesheet, sx, sy, GRID_SIZE, GRID_SIZE, x, y, w, h);
+        ctx.drawImage(spritesheet, sx, sy, sideLength, sideLength, x, y, w, h);
     }
 }
