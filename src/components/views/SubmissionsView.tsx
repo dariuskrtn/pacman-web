@@ -9,14 +9,17 @@ interface SubmissionsViewState {
     spritesheet?: HTMLImageElement;
     queueItems: QueueItem[];
     level?: Level;
+    simulatingItemIndex: number;
+    activeTimeout?: NodeJS.Timeout;
 }
 
 const POLL_PERIOD = 2000;
-const SHOW_OUTCOME_DURATION = 1000;
+const SHOW_OUTCOME_DURATION = 3000;
 
 export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     state: SubmissionsViewState = {
-        queueItems: []
+        queueItems: [],
+        simulatingItemIndex: 0,
     };
 
     async componentDidMount() {
@@ -32,7 +35,10 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         this.setState({
             queueItems,
             level: submissionsResponse.level
-        }, this.loadSubmissionDetails.bind(this));
+        }, () => {
+            this.setSimulationIndex(0);
+            this.loadSubmissionDetails();
+        });
 
         setInterval(() => this.pollSubmissions(), POLL_PERIOD);
     }
@@ -56,15 +62,36 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             }));
             this.setState({
                 queueItems: this.state.queueItems.concat(newItems)
-            }, this.loadSubmissionDetails.bind(this));
+            }, () => {
+                this.setSimulationIndex(this.state.simulatingItemIndex);
+                this.loadSubmissionDetails();
+            });
         }
         console.log("Poll finished");
+    }
+
+    setItemSimulationState(items: QueueItem[], simulationIndex: number) {
+        if (simulationIndex >= items.length) {
+            return items.map(item => ({
+                ...item,
+                state: QueueItemState.DONE
+            }));
+        }
+        const before = items.slice(0, simulationIndex).map(item => ({
+            ...item,
+            state: QueueItemState.DONE
+        }));
+        const simulating = { ...items[simulationIndex], state: QueueItemState.SIMULATING };
+        const after = items.slice(simulationIndex + 1).map(item => ({
+            ...item,
+            state: QueueItemState.WAITING
+        }));
+        return before.concat([simulating]).concat(after);
     }
 
     loadSubmissionDetails() {
         this.state
             .queueItems
-            .filter(item => item.state === QueueItemState.WAITING)
             .filter(item => item.details === undefined)
             .forEach(async (item) => {
                 const details = await api.GetSubmissionDetails(item.submission.id);
@@ -74,37 +101,42 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                     }
                     return { ...i, details };
                 });
-                this.setSubmissionToSimulate(newItems);
                 this.setState({ queueItems: newItems });
             });
     }
 
-    setSubmissionToSimulate(items: QueueItem[]) {
-        const anySimulating = items.some(i => i.state === QueueItemState.SIMULATING);
-        if (!anySimulating) {
-            const item = items.filter(i => i.state === QueueItemState.WAITING)[0];
-            if (item) {
-                item.state = QueueItemState.SIMULATING;
-            }
+    simulateNext() {
+        if (this.state.activeTimeout) {
+            clearTimeout(this.state.activeTimeout);
         }
+        let newItems = this.state.queueItems.slice(0);
+        newItems[this.state.simulatingItemIndex].state = QueueItemState.SHOW_OUTCOME;
+        this.setState({
+            queueItems: newItems,
+            activeTimeout: setTimeout(() => {
+                newItems = newItems.slice(0);
+                newItems[this.state.simulatingItemIndex].state = QueueItemState.DONE;
+                this.setState({ queueItems: newItems, simulatingItemIndex: this.state.simulatingItemIndex + 1 }, () => this.setSimulationIndex(this.state.simulatingItemIndex));
+            }, SHOW_OUTCOME_DURATION)
+        });
+
     }
 
-    simulateNext() {
-        let newItems = this.state.queueItems.map(item =>
-            item.state === QueueItemState.SIMULATING
-                ? { ...item, state: QueueItemState.SHOW_OUTCOME }
-                : item
-        );
-        this.setState({ queueItems: newItems });
-        setTimeout(() => {
-            newItems = this.state.queueItems.map(item =>
-                item.state === QueueItemState.SHOW_OUTCOME
-                    ? { ...item, state: QueueItemState.DONE }
-                    : item
-            );
-            this.setSubmissionToSimulate(newItems);
-            this.setState({ queueItems: newItems });
-        }, SHOW_OUTCOME_DURATION);
+    setSimulationIndex(i: number) {
+        if (i >= this.state.queueItems.length) {
+            i = this.state.queueItems.length;
+        }
+        if (i < 0) {
+            i = 0;
+        }
+        if (this.state.activeTimeout) {
+            clearTimeout(this.state.activeTimeout);
+            this.setState({ activeTimeout: undefined });
+        }
+        this.setState({
+            simulatingItemIndex: i,
+            queueItems: this.setItemSimulationState(this.state.queueItems, i)
+        });
     }
 
     render() {
@@ -115,13 +147,17 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             return <p>Loading submissions...</p>;
         }
         const currentQueueItem =
-            this.state
-                .queueItems
-                .filter(item => item.details !== undefined)
-                .filter(item => item.state === QueueItemState.SIMULATING || item.state === QueueItemState.SHOW_OUTCOME)[0];
+            this.state.simulatingItemIndex < this.state.queueItems.length
+                ? this.state.queueItems[this.state.simulatingItemIndex]
+                : undefined;
         return (
             <div>
-                <SubmissionQueue items={this.state.queueItems} />
+                <div>
+                    <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}>Previous</button>
+                    <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}>Next</button>
+                    <button onClick={() => this.simulateNext()}> Skip to end</button>
+                </div>
+                <SubmissionQueue items={this.state.queueItems.slice(this.state.simulatingItemIndex)} />
                 {
                     currentQueueItem && currentQueueItem.details
                         ?
