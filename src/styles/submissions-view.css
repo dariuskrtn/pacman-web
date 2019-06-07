@@ -29,6 +29,15 @@
     flex: 1;
 }
 
+.submission-queue-controls {
+    background-color: rgb(248, 249, 250);
+}
+
 .scoreboard {
     font-size: 1.7em;
+}
+
+.speed-input {
+    align-self: center;
+    width: 50% !important;
 }

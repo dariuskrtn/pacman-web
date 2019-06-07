@@ -6,6 +6,8 @@ interface SubmissionQueueControlsProps {
     onPrevious: () => void;
     onNext: () => void;
     onFastForward: () => void;
+    speed: number;
+    onSpeedChange: (newSpeed: number) => void;
 }
 
 export const SubmissionQueueControls = (props: SubmissionQueueControlsProps) => (
@@ -31,5 +33,15 @@ export const SubmissionQueueControls = (props: SubmissionQueueControlsProps) => 
         >
             <FontAwesomeIcon icon={faForward} />
         </button>
+        <input
+            type="range"
+            className="custom-range speed-input"
+            min={1}
+            max={99}
+            step={1}
+            value={props.speed}
+            onChange={e => props.onSpeedChange(+e.target.value)}
+        />
+        <button disabled type="button" className="btn btn-light">speed: {props.speed.toString().padStart(2, "0")}</button>
     </div>
 );

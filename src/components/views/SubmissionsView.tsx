@@ -16,7 +16,8 @@ interface SubmissionsViewState {
     levelClosed: boolean;
     simulatingItemIndex: number;
     activeTimeout?: NodeJS.Timeout;
-    startingStepIndex: number
+    startingStepIndex: number;
+    simulationSpeed: number;
 }
 
 const POLL_PERIOD = 2000;
@@ -28,6 +29,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         simulatingItemIndex: 0,
         levelClosed: false,
         startingStepIndex: 0,
+        simulationSpeed: 1,
     };
 
     async componentDidMount() {
@@ -122,14 +124,14 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         let details: SubmissionDetailsResponse | undefined = undefined;
         if (item.details) {
             details = {
-                initialState: {...item.details.initialState},
+                initialState: { ...item.details.initialState },
                 outcome: item.details.outcome,
-                steps: item.details.steps.map(x => ({...x}))
+                steps: item.details.steps.map(x => ({ ...x }))
             }
         }
         const newItem: QueueItem = {
             state: item.state,
-            submission: {...item.submission},
+            submission: { ...item.submission },
             details: details
         };
         return newItem;
@@ -154,7 +156,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     simulateNext() {
         if (this.state.activeTimeout) {
             clearTimeout(this.state.activeTimeout);
-            this.setState({activeTimeout: undefined});
+            this.setState({ activeTimeout: undefined });
         }
         let newItems = this.state.queueItems.slice(0);
         newItems[this.state.simulatingItemIndex].state = QueueItemState.SHOW_OUTCOME;
@@ -192,7 +194,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     }
 
     fastForward() {
-        if(this.state.simulatingItemIndex >= this.state.queueItems.length) {
+        if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
             return;
         }
         /*const before = this.state.queueItems.slice(0, this.state.simulatingItemIndex);
@@ -208,11 +210,15 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         this.setState({queueItems: before.concat([simulating]).concat(after)});*/
         const simulating = this.state.queueItems[this.state.simulatingItemIndex];
         if (simulating.details) {
-            this.setState({startingStepIndex: simulating.details.steps.length-1});
+            this.setState({ startingStepIndex: simulating.details.steps.length - 1 });
         }
     }
 
-    renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, submissionsBlocked: boolean, currentQueueItem?: QueueItem) {
+    setSimulationSpeed(speed: number) {
+        this.setState({ simulationSpeed: speed });
+    }
+
+    renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, onSpeedChange: (s: number) => void, submissionsBlocked: boolean, currentQueueItem?: QueueItem) {
         return (
             <div className="container-fluid" id="submissions-view-container">
                 <div className="row">
@@ -221,6 +227,8 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                             onPrevious={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}
                             onNext={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
                             onFastForward={() => this.fastForward()}
+                            speed={speed}
+                            onSpeedChange={onSpeedChange}
                         />
                         <SubmissionQueue
                             items={this.state.queueItems.slice(this.state.simulatingItemIndex)}
@@ -229,16 +237,16 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                     </div>
                     <div className="col-9" id="simulation-container">
                         {currentQueueItem && currentQueueItem.details
-                        ?
-                        <Simulation
-                            initialState={currentQueueItem.details.initialState}
-                            onSimulationEnd={onSimulationEnd}
-                            speed={speed}
-                            spritesheet={spritesheet}
-                            steps={currentQueueItem.details.steps}
-                            startingStep={this.state.startingStepIndex}
-                        />
-                        : <Loader />
+                            ?
+                            <Simulation
+                                initialState={currentQueueItem.details.initialState}
+                                onSimulationEnd={onSimulationEnd}
+                                speed={speed}
+                                spritesheet={spritesheet}
+                                steps={currentQueueItem.details.steps}
+                                startingStep={this.state.startingStepIndex}
+                            />
+                            : <Loader />
                         }
                     </div>
                 </div>
@@ -251,11 +259,13 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-3" id="submissions-queue-container">
-                            <SubmissionQueueControls
-                                onPrevious={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}
-                                onNext={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
-                                onFastForward={() => this.fastForward()}
-                            />
+                        <SubmissionQueueControls
+                            onPrevious={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}
+                            onNext={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
+                            onFastForward={() => this.fastForward()}
+                            speed={this.state.simulationSpeed}
+                            onSpeedChange={speed => this.setSimulationSpeed(speed)}
+                        />
                     </div>
                 </div>
                 <div className="row">
@@ -275,19 +285,19 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             return <Loader />;
         }
         if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
-            if(this.state.levelClosed) {
+            if (this.state.levelClosed) {
                 return this.renderScoreboard();
             }
             const staticItem: QueueItem = {
                 details: {
                     initialState: this.state.level,
-                    steps: [{objects: this.state.level.objects}],
+                    steps: [{ objects: this.state.level.objects }],
                     outcome: Outcome.success
                 },
                 state: QueueItemState.SIMULATING,
-                submission: {id: -1, user: "none"}
+                submission: { id: -1, user: "none" }
             }
-            return this.renderSimulation(this.state.spritesheet, ()=>{}, 0, false, staticItem);
+            return this.renderSimulation(this.state.spritesheet, () => { }, 0, _ => { }, false, staticItem);
         }
         const currentQueueItem =
             this.state.simulatingItemIndex < this.state.queueItems.length
@@ -295,8 +305,22 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                 : undefined;
         if (this.state.levelClosed && this.state.simulatingItemIndex < this.state.queueItems.length) {
             // Level is closed and queue is not empty
-            return this.renderSimulation(this.state.spritesheet, ()=>this.simulateNext(), 10, true, currentQueueItem);
+            return this.renderSimulation(
+                this.state.spritesheet,
+                () => this.simulateNext(),
+                this.state.simulationSpeed,
+                speed => this.setSimulationSpeed(speed),
+                true,
+                currentQueueItem
+            );
         }
-        return this.renderSimulation(this.state.spritesheet, ()=>this.simulateNext(), 10, false, currentQueueItem);
+        return this.renderSimulation(
+            this.state.spritesheet,
+            () => this.simulateNext(),
+            this.state.simulationSpeed,
+            speed => this.setSimulationSpeed(speed),
+            false,
+            currentQueueItem
+        );
     }
 }
