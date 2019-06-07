@@ -1,3 +1,5 @@
+import { faArrowDown, faArrowUp, faForward } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import * as api from "../../api/Api";
 import { Level, Outcome } from "../../api/Contracts";
@@ -149,15 +151,33 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         return (
             <div className="container-fluid" id="submissions-view-container">
                 <div className="row">
-                    <div className="col-3">
-                        <div>
-                            <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}>Previous</button>
-                            <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}>Next</button>
-                            <button onClick={() => this.simulateNext()}> Skip to end</button>
+                    <div className="col-3" id="submissions-queue-container">
+                        <div className="btn-group submission-queue-controls" role="group">
+                            <button
+                                type="button"
+                                className="btn btn-outline-dark"
+                                onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}
+                            >
+                                <FontAwesomeIcon icon={faArrowUp} />
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-dark"
+                                onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
+                            >
+                                <FontAwesomeIcon icon={faArrowDown} />
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-dark"
+                                onClick={() => this.simulateNext()}
+                            >
+                            <FontAwesomeIcon icon={faForward} />
+                            </button>
                         </div>
                         <SubmissionQueue items={this.state.queueItems.slice(this.state.simulatingItemIndex)} />
                     </div>
-                    <div className="col-9">
+                    <div className="col-9" id="simulation-container">
                         {
                             currentQueueItem && currentQueueItem.details
                                 ?

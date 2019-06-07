@@ -1,3 +1,17 @@
 #submissions-view-container, #submissions-view-container > div.row {
     height: 100vh;
 }
+
+#submissions-queue-container {
+    /* border-right: 1px solid black; */
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.btn-group.submission-queue-controls {
+    display: flex;
+}
+
+.submission-queue-controls .btn {
+    flex: 1;
+}

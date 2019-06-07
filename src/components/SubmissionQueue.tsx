@@ -1,5 +1,5 @@
 import React from "react";
-import { Submission, SubmissionDetailsResponse } from "../api/Contracts";
+import { Outcome, Submission, SubmissionDetailsResponse } from "../api/Contracts";
 
 export enum QueueItemState {
     WAITING = "WAITING",
@@ -20,21 +20,28 @@ interface SubmissionQueueProps {
 
 // TODO: uzdet atitinkamas klases, kad paspalvintu or sth
 const renderQueueItem = (item: QueueItem) => {
-    let text = `${item.submission.id}. ${item.submission.user}`;
-    if (item.details && (item.state === QueueItemState.SHOW_OUTCOME || item.state === QueueItemState.DONE)) {
-        text += ` ${item.details.outcome}`;
-    }
+    const text = `${item.submission.id}. ${item.submission.user}`;
+    const classes = ["list-group-item"];
     if (item.details && item.state === QueueItemState.SIMULATING) {
-        text += " vertinama...";
+        classes.push("list-group-item-primary");
     }
-    return <li key={item.submission.id}>{text}</li>;
+    if (item.details && item.state === QueueItemState.SHOW_OUTCOME) {
+        if (item.details.outcome === Outcome.success) {
+            classes.push("list-group-item-success");
+        } else if(item.details.outcome === Outcome.fail) {
+            classes.push("list-group-item-danger");
+        } else {
+            classes.push("list-group-item-warning");
+        }
+    }
+    return <li className={classes.join(" ")} key={item.submission.id}>{text}</li>;
 }
 
 export const SubmissionQueue = ({ items }: SubmissionQueueProps) => (
     items.length === 0
         ? <p>Queue is empty :)</p>
         : (
-            <ul>
+            <ul className="list-group">
                 {items.map(renderQueueItem)}
             </ul>
         )
