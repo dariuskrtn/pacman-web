@@ -1,7 +1,8 @@
 import React from "react";
 import * as api from "../../api/Api";
-import { Level } from "../../api/Contracts";
+import { Level, Outcome } from "../../api/Contracts";
 import spritesheet from "../../assets/spritesheet.png";
+import "../../styles/submissions-view.css";
 import { Simulation } from "../simulation/Simulation";
 import { QueueItem, QueueItemState, SubmissionQueue } from "../SubmissionQueue";
 import { ScoreboardView } from "./ScoreboardView";
@@ -143,31 +144,9 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         });
     }
 
-    render() {
-        if (!this.state.spritesheet) {
-            return <p>Loading resources...</p>;
-        }
-        if (!this.state.level) {
-            return <p>Loading submissions...</p>;
-        }
-        if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
-            if(this.state.levelClosed) {
-                return <ScoreboardView />;
-            }
-            return <Simulation
-                        initialState={this.state.level}
-                        onSimulationEnd={()=>{}}
-                        speed={0}
-                        spritesheet={this.state.spritesheet}
-                        steps={[{objects: this.state.level.objects}]}
-                    />;
-        }
-        const currentQueueItem =
-            this.state.simulatingItemIndex < this.state.queueItems.length
-                ? this.state.queueItems[this.state.simulatingItemIndex]
-                : undefined;
+    renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, currentQueueItem?: QueueItem) {
         return (
-            <div className="container-fluid" style={{border: "1px solid red"}}>
+            <div className="container-fluid" id="submissions-view-container">
                 <div className="row">
                     <div className="col-3">
                         <div>
@@ -183,9 +162,9 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                                 ?
                                 <Simulation
                                     initialState={currentQueueItem.details.initialState}
-                                    onSimulationEnd={() => this.simulateNext()}
-                                    speed={10}
-                                    spritesheet={this.state.spritesheet}
+                                    onSimulationEnd={onSimulationEnd}
+                                    speed={speed}
+                                    spritesheet={spritesheet}
                                     steps={currentQueueItem.details.steps}
                                 />
                                 : <p>Loading simulation...</p>
@@ -194,5 +173,34 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                 </div>
             </div>
         );
+    }
+
+    render() {
+        if (!this.state.spritesheet) {
+            return <p>Loading resources...</p>;
+        }
+        if (!this.state.level) {
+            return <p>Loading submissions...</p>;
+        }
+        if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
+            if(this.state.levelClosed) {
+                return <ScoreboardView />;
+            }
+            const staticItem: QueueItem = {
+                details: {
+                    initialState: this.state.level,
+                    steps: [{objects: this.state.level.objects}],
+                    outcome: Outcome.success
+                },
+                state: QueueItemState.SIMULATING,
+                submission: {id: -1, user: "none"}
+            }
+            return this.renderSimulation(this.state.spritesheet, ()=>{}, 0, staticItem);
+        }
+        const currentQueueItem =
+            this.state.simulatingItemIndex < this.state.queueItems.length
+                ? this.state.queueItems[this.state.simulatingItemIndex]
+                : undefined;
+        return this.renderSimulation(this.state.spritesheet, ()=>this.simulateNext(), 10, currentQueueItem);
     }
 }

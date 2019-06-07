@@ -1,0 +1,3 @@
+#submissions-view-container, #submissions-view-container > div.row {
+    height: 100vh;
+}
