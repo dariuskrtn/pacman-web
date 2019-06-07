@@ -3,6 +3,7 @@ import * as api from "../../api/Api";
 import { Level, Outcome } from "../../api/Contracts";
 import spritesheet from "../../assets/spritesheet.png";
 import "../../styles/submissions-view.css";
+import { Loader } from "../Loader";
 import { Simulation } from "../simulation/Simulation";
 import { QueueItem, QueueItemState, SubmissionQueue } from "../SubmissionQueue";
 import { ScoreboardView } from "./ScoreboardView";
@@ -167,7 +168,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                                     spritesheet={spritesheet}
                                     steps={currentQueueItem.details.steps}
                                 />
-                                : <p>Loading simulation...</p>
+                                : <Loader />
                         }
                     </div>
                 </div>
@@ -177,10 +178,10 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
 
     render() {
         if (!this.state.spritesheet) {
-            return <p>Loading resources...</p>;
+            return <Loader />;
         }
         if (!this.state.level) {
-            return <p>Loading submissions...</p>;
+            return <Loader />;
         }
         if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
             if(this.state.levelClosed) {

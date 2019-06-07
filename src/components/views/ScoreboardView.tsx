@@ -1,7 +1,8 @@
 import React from "react";
-import { Scoreboard } from "../../api/Contracts";
 import * as api from "../../api/Api";
+import { Scoreboard } from "../../api/Contracts";
 import { ScoreboardTable } from "../ScoreboardTable";
+import { Loader } from "../Loader";
 
 interface ScoreboardViewState {
     scoreboards: Scoreboard[];
@@ -22,7 +23,7 @@ export class ScoreboardView extends React.Component<{}, ScoreboardViewState> {
 
     render() {
         if (this.state.isLoading) {
-            return <p>Loading...</p>;
+            return <Loader />;
         }
         if (this.state.scoreboards.length === 0) {
             return <p>No scoreboards available</p>;
