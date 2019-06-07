@@ -1,8 +1,8 @@
 import React from "react";
-import { Canvas } from "./Canvas";
-import { Level, Cell, Entity, EntityKind } from "../../api/Contracts";
-import { renderEntity } from "./renderingUtils";
+import { Cell, Entity, EntityKind } from "../../api/Contracts";
 import { CellEmpty, CellWall } from "../../data/sprites";
+import { Canvas } from "./Canvas";
+import { renderEntity } from "./renderingUtils";
 
 interface RendererProps {
     cells: Cell[][];
@@ -17,9 +17,32 @@ interface GridInfo {
     offsetY: number;
 }
 
-export class Renderer extends React.Component<RendererProps, never> {
+interface RendererState {
+    canvasHack: number;
+}
+
+export class Renderer extends React.Component<RendererProps, RendererState> {
     ctx?: CanvasRenderingContext2D;
     gridInfo?: GridInfo;
+    resizeFunction: any = () => this.onResize();
+
+    state: RendererState = {
+        canvasHack: 0,
+    };
+
+    componentDidMount() {
+        window.addEventListener("resize", this.resizeFunction);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resizeFunction);
+    }
+
+    onResize() {
+        if (this.ctx) {
+            this.setState({canvasHack: this.state.canvasHack+1});
+        }
+    }
 
     componentDidUpdate() {
         if (!this.ctx || !this.gridInfo) { return; }
@@ -100,6 +123,6 @@ export class Renderer extends React.Component<RendererProps, never> {
     }
 
     render() {
-        return <Canvas onContextLoaded={ctx => this.loadCanvasContext(ctx)} />;
+        return <Canvas key={this.state.canvasHack} onContextLoaded={ctx => this.loadCanvasContext(ctx)} />;
     }
 }
