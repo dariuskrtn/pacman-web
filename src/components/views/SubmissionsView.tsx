@@ -59,6 +59,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
 
         this.setState({
             levelClosed: submissions.levelClosed,
+            level: submissions.level,
         });
 
         if (!existingSubmissionIds.every(id => submissions.submissions.map(s => s.id).includes(id))) {
