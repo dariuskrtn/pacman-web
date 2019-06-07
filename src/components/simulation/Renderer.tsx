@@ -74,6 +74,8 @@ export class Renderer extends React.Component<RendererProps, RendererState> {
 
     drawGrid(ctx: CanvasRenderingContext2D, cellSize: number, cells: Cell[][]) {
         ctx.save();
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, cellSize * cells[0].length, cellSize * cells.length);
         for (let r = 0; r < cells.length; r++) {
             for (let c = 0; c < cells[r].length; c++) {
                 const cell = cells[r][c];

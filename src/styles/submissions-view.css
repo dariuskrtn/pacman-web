@@ -1,13 +1,14 @@
-#submissions-view-container, #submissions-view-container > div.row {
+#submissions-view-container,
+#submissions-view-container>div.row {
     height: 99vh;
 }
 
-#submissions-view-container > div.row > div {
+#submissions-view-container>div.row>div {
     height: 100%;
 }
 
 #submissions-queue-container {
-    /* border-right: 1px solid black; */
+    border-right: 1px solid black;
     padding-left: 0;
     padding-right: 0;
     overflow-y: auto;
