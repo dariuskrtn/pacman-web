@@ -56,6 +56,11 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         console.log("Polling for new submissions...");
         const existingSubmissionIds = this.state.queueItems.map(item => item.submission.id);
         const submissions = await api.GetSubmissions();
+
+        this.setState({
+            levelClosed: submissions.levelClosed,
+        });
+
         if (!existingSubmissionIds.every(id => submissions.submissions.map(s => s.id).includes(id))) {
             // Not all saved IDs are contained in this response -- this is a new level
             console.log("New level detected");
