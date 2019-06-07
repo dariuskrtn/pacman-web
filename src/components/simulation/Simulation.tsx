@@ -40,7 +40,7 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
         if (!newProps || !this.props) {
             return;
         }
-        if (newProps.initialState !== this.props.initialState) {
+        if (newProps.initialState !== this.props.initialState || newProps.steps !== this.props.steps) {
             // Start new simulation
             if (this.rAF) {
                 cancelAnimationFrame(this.rAF);

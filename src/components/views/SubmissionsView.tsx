@@ -146,6 +146,22 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         });
     }
 
+    fastForward() {
+        if(this.state.simulatingItemIndex >= this.state.queueItems.length) {
+            return;
+        }
+        const before = this.state.queueItems.slice(0, this.state.simulatingItemIndex);
+        const simulating = {...this.state.queueItems[this.state.simulatingItemIndex]};
+        const after = this.state.queueItems.slice(this.state.simulatingItemIndex+1);
+        if (simulating.details) {
+            simulating.details = {
+                ...simulating.details,
+                steps: [simulating.details.steps[simulating.details.steps.length-1]]
+            }
+        }
+        this.setState({queueItems: before.concat([simulating]).concat(after)});
+    }
+
     renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, currentQueueItem?: QueueItem) {
         return (
             <div className="container-fluid" id="submissions-view-container">
@@ -154,7 +170,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                         <SubmissionQueueControls
                             onPrevious={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}
                             onNext={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
-                            onFastForward={() => this.simulateNext()}
+                            onFastForward={() => this.fastForward()}
                         />
                         <SubmissionQueue items={this.state.queueItems.slice(this.state.simulatingItemIndex)} />
                     </div>
