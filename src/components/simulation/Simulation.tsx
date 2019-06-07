@@ -9,6 +9,7 @@ interface SimulationProps {
     speed: number;
     onSimulationEnd: () => void;
     spritesheet: HTMLImageElement;
+    startingStep?: number;
 }
 
 interface SimulationState {
@@ -21,7 +22,7 @@ interface SimulationState {
 
 const EMPTY_STATE = (props: SimulationProps) => ({
     lastTime: Date.now(),
-    currentStep: 0,
+    currentStep: props.startingStep ? props.startingStep : 0,
     stepProgress: 0,
     currentFrame: 0,
     entitiesState: props.initialState.objects,
@@ -40,11 +41,12 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
         if (!newProps || !this.props) {
             return;
         }
-        if (newProps.initialState !== this.props.initialState || newProps.steps !== this.props.steps) {
+        if (newProps.initialState !== this.props.initialState || newProps.steps !== this.props.steps || newProps.startingStep !== this.props.startingStep) {
             // Start new simulation
             if (this.rAF) {
                 cancelAnimationFrame(this.rAF);
             }
+            console.log(newProps);
             this.setState(EMPTY_STATE(newProps), () => this.rAF = requestAnimationFrame(() => this.update(0)));
         }
     }

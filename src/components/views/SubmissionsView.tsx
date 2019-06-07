@@ -16,6 +16,7 @@ interface SubmissionsViewState {
     levelClosed: boolean;
     simulatingItemIndex: number;
     activeTimeout?: NodeJS.Timeout;
+    startingStepIndex: number
 }
 
 const POLL_PERIOD = 2000;
@@ -25,7 +26,8 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     state: SubmissionsViewState = {
         queueItems: [],
         simulatingItemIndex: 0,
-        levelClosed: false
+        levelClosed: false,
+        startingStepIndex: 0,
     };
 
     async componentDidMount() {
@@ -123,7 +125,11 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             activeTimeout: setTimeout(() => {
                 newItems = newItems.slice(0);
                 newItems[this.state.simulatingItemIndex].state = QueueItemState.DONE;
-                this.setState({ queueItems: newItems, simulatingItemIndex: this.state.simulatingItemIndex + 1 }, () => this.setSimulationIndex(this.state.simulatingItemIndex));
+                this.setState({
+                    queueItems: newItems,
+                    simulatingItemIndex: this.state.simulatingItemIndex + 1,
+                    startingStepIndex: 0,
+                }, () => this.setSimulationIndex(this.state.simulatingItemIndex));
             }, SHOW_OUTCOME_DURATION)
         });
 
@@ -142,7 +148,8 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         }
         this.setState({
             simulatingItemIndex: i,
-            queueItems: this.setItemSimulationState(this.state.queueItems, i)
+            queueItems: this.setItemSimulationState(this.state.queueItems, i),
+            startingStepIndex: 0,
         });
     }
 
@@ -150,16 +157,21 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         if(this.state.simulatingItemIndex >= this.state.queueItems.length) {
             return;
         }
-        const before = this.state.queueItems.slice(0, this.state.simulatingItemIndex);
+        /*const before = this.state.queueItems.slice(0, this.state.simulatingItemIndex);
         const simulating = {...this.state.queueItems[this.state.simulatingItemIndex]};
         const after = this.state.queueItems.slice(this.state.simulatingItemIndex+1);
         if (simulating.details) {
             simulating.details = {
                 ...simulating.details,
                 steps: [simulating.details.steps[simulating.details.steps.length-1]]
+                // ^ This is bad - it deletes steps, so it becomes impossible to come back to the simulation from the beginning
             }
         }
-        this.setState({queueItems: before.concat([simulating]).concat(after)});
+        this.setState({queueItems: before.concat([simulating]).concat(after)});*/
+        const simulating = this.state.queueItems[this.state.simulatingItemIndex];
+        if (simulating.details) {
+            this.setState({startingStepIndex: simulating.details.steps.length-1});
+        }
     }
 
     renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, currentQueueItem?: QueueItem) {
@@ -184,6 +196,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                                     speed={speed}
                                     spritesheet={spritesheet}
                                     steps={currentQueueItem.details.steps}
+                                    startingStep={this.state.startingStepIndex}
                                 />
                                 : <Loader />
                         }
