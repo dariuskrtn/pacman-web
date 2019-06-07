@@ -1,5 +1,5 @@
 import React from "react";
-import { Outcome, Submission, SubmissionDetailsResponse } from "../api/Contracts";
+import { Outcome, Submission, SubmissionDetailsResponse } from "../../api/Contracts";
 
 export enum QueueItemState {
     WAITING = "WAITING",
