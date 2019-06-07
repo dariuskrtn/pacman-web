@@ -23,7 +23,7 @@ interface RendererState {
 
 export class Renderer extends React.Component<RendererProps, RendererState> {
     ctx?: CanvasRenderingContext2D;
-    gridInfo?: GridInfo;
+    gridInfo?: GridInfo; // TODO: need to update this on new level
     resizeFunction: any = () => this.onResize();
 
     state: RendererState = {
@@ -40,12 +40,13 @@ export class Renderer extends React.Component<RendererProps, RendererState> {
 
     onResize() {
         if (this.ctx) {
-            this.setState({canvasHack: this.state.canvasHack+1});
+            this.setState({ canvasHack: this.state.canvasHack + 1 });
         }
     }
 
     componentDidUpdate() {
         if (!this.ctx || !this.gridInfo) { return; }
+        this.loadCanvasContext(this.ctx);
         this.draw(this.ctx, this.gridInfo);
     }
 
