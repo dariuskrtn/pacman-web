@@ -65,7 +65,15 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         if (!existingSubmissionIds.every(id => submissions.submissions.map(s => s.id).includes(id))) {
             // Not all saved IDs are contained in this response -- this is a new level
             console.log("New level detected");
-            // TODO: switch levels
+            this.setState({
+                queueItems: submissions.submissions.map(s => ({
+                    submission: s,
+                    state: QueueItemState.WAITING,
+                })),
+                simulatingItemIndex: 0,
+            }, () => {
+                this.loadSubmissionDetails();
+            });
             return;
         }
         const newSubmissions = submissions.submissions.filter(s => !existingSubmissionIds.includes(s.id));
@@ -73,16 +81,22 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             console.log(`Found ${newSubmissions.length} new submissions. Updating...`)
             const newItems = newSubmissions.map(s => ({
                 submission: s,
-                state: QueueItemState.WAITING
+                state: QueueItemState.WAITING,
             }));
             this.setState({
                 queueItems: this.state.queueItems.concat(newItems)
             }, () => {
-                this.setSimulationIndex(this.state.simulatingItemIndex);
+                if (!this.isSimulating()) {
+                    this.setSimulationIndex(this.state.simulatingItemIndex);
+                }
                 this.loadSubmissionDetails();
             });
         }
         console.log("Poll finished");
+    }
+
+    isSimulating() {
+        return this.state.simulatingItemIndex < this.state.queueItems.length;
     }
 
     setItemSimulationState(items: QueueItem[], simulationIndex: number) {
