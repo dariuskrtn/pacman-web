@@ -228,8 +228,10 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                         />
                     </div>
                     <div className="col-9" id="simulation-container">
-                        {
-                            currentQueueItem && currentQueueItem.details
+                        {this.state.simulatingItemIndex >= this.state.queueItems.length && this.state.levelClosed 
+                            ?
+                                <ScoreboardView />
+                            : (currentQueueItem && currentQueueItem.details
                                 ?
                                 <Simulation
                                     initialState={currentQueueItem.details.initialState}
@@ -239,7 +241,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                                     steps={currentQueueItem.details.steps}
                                     startingStep={this.state.startingStepIndex}
                                 />
-                                : <Loader />
+                                : <Loader />)
                         }
                     </div>
                 </div>
@@ -256,7 +258,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         }
         if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
             if(this.state.levelClosed) {
-                return <ScoreboardView />;
+                return this.renderSimulation(this.state.spritesheet, ()=>{}, 0, false);
             }
             const staticItem: QueueItem = {
                 details: {

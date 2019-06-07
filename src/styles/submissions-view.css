@@ -27,3 +27,7 @@
 .submission-queue-controls .btn {
     flex: 1;
 }
+
+.scoreboard {
+    font-size: 1.1em;
+}
