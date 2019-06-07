@@ -1,6 +1,6 @@
 import React from "react";
 import * as api from "../../api/Api";
-import { Level, Outcome } from "../../api/Contracts";
+import { Level, Outcome, SubmissionDetailsResponse } from "../../api/Contracts";
 import spritesheet from "../../assets/spritesheet.png";
 import "../../styles/submissions-view.css";
 import { Loader } from "../Loader";
@@ -87,15 +87,32 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
             }));
         }
         const before = items.slice(0, simulationIndex).map(item => ({
-            ...item,
-            state: QueueItemState.DONE
+            ...this.deepCopy(item),
+            state: QueueItemState.DONE,
         }));
-        const simulating = { ...items[simulationIndex], state: QueueItemState.SIMULATING };
+        const simulating = { ...this.deepCopy(items[simulationIndex]), state: QueueItemState.SIMULATING };
         const after = items.slice(simulationIndex + 1).map(item => ({
-            ...item,
+            ...this.deepCopy(item),
             state: QueueItemState.WAITING
         }));
         return before.concat([simulating]).concat(after);
+    }
+
+    deepCopy(item: QueueItem) {
+        let details: SubmissionDetailsResponse | undefined = undefined;
+        if (item.details) {
+            details = {
+                initialState: {...item.details.initialState},
+                outcome: item.details.outcome,
+                steps: item.details.steps.map(x => ({...x}))
+            }
+        }
+        const newItem: QueueItem = {
+            state: item.state,
+            submission: {...item.submission},
+            details: details
+        };
+        return newItem;
     }
 
     loadSubmissionDetails() {
@@ -117,6 +134,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     simulateNext() {
         if (this.state.activeTimeout) {
             clearTimeout(this.state.activeTimeout);
+            this.setState({activeTimeout: undefined});
         }
         let newItems = this.state.queueItems.slice(0);
         newItems[this.state.simulatingItemIndex].state = QueueItemState.SHOW_OUTCOME;
