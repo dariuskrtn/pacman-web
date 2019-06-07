@@ -34,7 +34,6 @@ const outcomeToString = (outcome: Outcome) => {
 
 // TODO: uzdet atitinkamas klases, kad paspalvintu or sth
 const renderQueueItem = (item: QueueItem) => {
-    const text = `${item.submission.id}. ${item.submission.user}`;
     const classes = ["list-group-item"];
     let status = "Judging";
     if (item.details && item.state === QueueItemState.SIMULATING) {
@@ -52,7 +51,10 @@ const renderQueueItem = (item: QueueItem) => {
     }
     return (
         <li className={classes.join(" ")} key={item.submission.id}>
-            <h3 className="display-4">{text}</h3>
+            <h3 className="display-4">
+                <small className="text-muted" style={{ marginRight: "10px" }}>#{item.submission.id}</small>
+                {item.submission.user}
+            </h3>
             <h3><small className="text-muted">{status}</small></h3>
         </li>
     );
@@ -62,7 +64,7 @@ const emptyQueueMessage = (
     <ul className="list-group">
         <li className="list-group-item list-group-item-light">
             <h3 className="display-5">
-                <FontAwesomeIcon icon={faClock} style={{marginRight: "10px"}} />
+                <FontAwesomeIcon icon={faClock} style={{ marginRight: "10px" }} />
                 Waiting for submissions
             </h3>
         </li>
@@ -72,7 +74,7 @@ const emptyQueueMessage = (
 const submissionsBlockedMessage = (
     <li className="list-group-item list-group-item-danger">
         <h3 className="display-5">
-            <FontAwesomeIcon icon={faBan} style={{marginRight: "10px"}} />
+            <FontAwesomeIcon icon={faBan} style={{ marginRight: "10px" }} />
             No more submissions allowed
         </h3>
     </li>
@@ -83,9 +85,9 @@ export const SubmissionQueue = ({ items, submissionsBlocked }: SubmissionQueuePr
         ? emptyQueueMessage
         : (
             <ul className="list-group">
-                { submissionsBlocked
-                ? submissionsBlockedMessage
-                : null
+                {submissionsBlocked
+                    ? submissionsBlockedMessage
+                    : null
                 }
                 {items.map(renderQueueItem)}
             </ul>
