@@ -97,6 +97,7 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
                 entities={this.state.entitiesState}
                 frame={this.state.currentFrame}
                 spritesheet={this.props.spritesheet}
+                stepIndex={this.state.currentStep}
             />
         );
     }

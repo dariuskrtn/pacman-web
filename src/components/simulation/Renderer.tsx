@@ -8,6 +8,7 @@ interface RendererProps {
     cells: Cell[][];
     entities: Entity[];
     frame: number;
+    stepIndex: number;
     spritesheet: HTMLImageElement;
 }
 
@@ -64,12 +65,27 @@ export class Renderer extends React.Component<RendererProps, RendererState> {
         this.drawObjects(ctx, gridInfo.sideLength, this.props.entities);
         ctx.restore();
         this.showFrameCount(ctx);
+        this.showStepCount(ctx);
     }
 
     showFrameCount(ctx: CanvasRenderingContext2D) {
-        ctx.font = "20px Georgia";
+        ctx.font = "20px Courier New";
         ctx.fillStyle = "red";
-        ctx.fillText(this.props.frame.toString(), ctx.canvas.width - 50, 20);
+        ctx.textBaseline = "top";
+        // const text = `frames = ${this.props.frame.toString()}`;
+        const text = this.props.frame.toString();
+        const textSize = ctx.measureText(text);
+        ctx.fillText(text, ctx.canvas.width - textSize.width, 0);
+    }
+
+    showStepCount(ctx: CanvasRenderingContext2D) {
+        ctx.font = "50px Courier New";
+        ctx.fillStyle = "black";
+        ctx.textBaseline = "bottom";
+        // const text = `steps = ${this.props.stepIndex.toString()}`;
+        const text = this.props.stepIndex.toString();
+        const textSize = ctx.measureText(text);
+        ctx.fillText(text, ctx.canvas.width - textSize.width, ctx.canvas.height);
     }
 
     drawGrid(ctx: CanvasRenderingContext2D, cellSize: number, cells: Cell[][]) {

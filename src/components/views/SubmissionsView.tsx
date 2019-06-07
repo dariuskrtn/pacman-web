@@ -29,7 +29,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         simulatingItemIndex: 0,
         levelClosed: false,
         startingStepIndex: 0,
-        simulationSpeed: 1,
+        simulationSpeed: 4,
     };
 
     async componentDidMount() {
@@ -297,7 +297,14 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                 state: QueueItemState.SIMULATING,
                 submission: { id: -1, user: "none" }
             }
-            return this.renderSimulation(this.state.spritesheet, () => { }, 0, _ => { }, false, staticItem);
+            return this.renderSimulation(
+                this.state.spritesheet,
+                () => { },
+                this.state.simulationSpeed,
+                speed => this.setSimulationSpeed(speed),
+                false,
+                staticItem
+            );
         }
         const currentQueueItem =
             this.state.simulatingItemIndex < this.state.queueItems.length

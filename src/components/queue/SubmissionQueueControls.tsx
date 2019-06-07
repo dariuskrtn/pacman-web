@@ -37,7 +37,7 @@ export const SubmissionQueueControls = (props: SubmissionQueueControlsProps) => 
             type="range"
             className="custom-range speed-input"
             min={1}
-            max={99}
+            max={15}
             step={1}
             value={props.speed}
             onChange={e => props.onSpeedChange(+e.target.value)}
