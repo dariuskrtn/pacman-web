@@ -192,7 +192,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         }
     }
 
-    renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, currentQueueItem?: QueueItem) {
+    renderSimulation(spritesheet: HTMLImageElement, onSimulationEnd: () => void, speed: number, submissionsBlocked: boolean, currentQueueItem?: QueueItem) {
         return (
             <div className="container-fluid" id="submissions-view-container">
                 <div className="row">
@@ -202,7 +202,10 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                             onNext={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
                             onFastForward={() => this.fastForward()}
                         />
-                        <SubmissionQueue items={this.state.queueItems.slice(this.state.simulatingItemIndex)} />
+                        <SubmissionQueue
+                            items={this.state.queueItems.slice(this.state.simulatingItemIndex)}
+                            submissionsBlocked={submissionsBlocked}
+                        />
                     </div>
                     <div className="col-9" id="simulation-container">
                         {
@@ -244,12 +247,16 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                 state: QueueItemState.SIMULATING,
                 submission: {id: -1, user: "none"}
             }
-            return this.renderSimulation(this.state.spritesheet, ()=>{}, 0, staticItem);
+            return this.renderSimulation(this.state.spritesheet, ()=>{}, 0, false, staticItem);
         }
         const currentQueueItem =
             this.state.simulatingItemIndex < this.state.queueItems.length
                 ? this.state.queueItems[this.state.simulatingItemIndex]
                 : undefined;
-        return this.renderSimulation(this.state.spritesheet, ()=>this.simulateNext(), 10, currentQueueItem);
+        if (this.state.levelClosed && this.state.simulatingItemIndex < this.state.queueItems.length) {
+            // Level is closed and queue is not empty
+            return this.renderSimulation(this.state.spritesheet, ()=>this.simulateNext(), 10, true, currentQueueItem);
+        }
+        return this.renderSimulation(this.state.spritesheet, ()=>this.simulateNext(), 10, false, currentQueueItem);
     }
 }

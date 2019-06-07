@@ -1,4 +1,4 @@
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Outcome, Submission, SubmissionDetailsResponse } from "../../api/Contracts";
@@ -18,6 +18,7 @@ export interface QueueItem {
 
 interface SubmissionQueueProps {
     items: QueueItem[];
+    submissionsBlocked?: boolean;
 }
 
 const outcomeToString = (outcome: Outcome) => {
@@ -68,11 +69,24 @@ const emptyQueueMessage = (
     </ul>
 );
 
-export const SubmissionQueue = ({ items }: SubmissionQueueProps) => (
+const submissionsBlockedMessage = (
+    <li className="list-group-item list-group-item-danger">
+        <h3 className="display-5">
+            <FontAwesomeIcon icon={faBan} style={{marginRight: "10px"}} />
+            No more submissions allowed
+        </h3>
+    </li>
+);
+
+export const SubmissionQueue = ({ items, submissionsBlocked }: SubmissionQueueProps) => (
     items.length === 0
         ? emptyQueueMessage
         : (
             <ul className="list-group">
+                { submissionsBlocked
+                ? submissionsBlockedMessage
+                : null
+                }
                 {items.map(renderQueueItem)}
             </ul>
         )
