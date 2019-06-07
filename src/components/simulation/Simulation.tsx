@@ -1,7 +1,7 @@
 import React from "react";
-import { Renderer } from "./Renderer";
-import { Level, Step, Entity } from "../../api/Contracts";
+import { Entity, Level, Step } from "../../api/Contracts";
 import { moveEntities } from "./logic";
+import { Renderer } from "./Renderer";
 
 interface SimulationProps {
     initialState: Level;
@@ -60,6 +60,10 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
     }
 
     update(dt: number) {
+        if (this.state.currentStep >= this.props.steps.length) {
+            console.log(this.props.initialState.cells, this.state.entitiesState, this.state.currentFrame);
+            return;
+        }
         const now = Date.now();
         const nextDt = (now - this.state.lastTime) / 1000;
         if (this.state.stepProgress >= 1) {
@@ -78,7 +82,7 @@ export class Simulation extends React.Component<SimulationProps, SimulationState
             lastTime: Date.now(),
             currentFrame: this.state.currentFrame + 1,
             stepProgress: newStepProgress,
-            entitiesState: moveEntities(this.props.steps[this.state.currentStep].objects, newStepProgress)
+            entitiesState: moveEntities(this.props.steps[this.state.currentStep].objects, newStepProgress),
         });
         // TODO: check for collisions (entity might die in the middle of the move)
         this.rAF = requestAnimationFrame(() => this.update(nextDt));

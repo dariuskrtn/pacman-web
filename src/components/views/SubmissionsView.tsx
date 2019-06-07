@@ -1,9 +1,9 @@
 import React from "react";
-import { Submission, SubmissionDetailsResponse, Level } from "../../api/Contracts";
-import spritesheet from "../../assets/spritesheet.png";
 import * as api from "../../api/Api";
-import { SubmissionQueue, QueueItem, QueueItemState } from "../SubmissionQueue";
+import { Level } from "../../api/Contracts";
+import spritesheet from "../../assets/spritesheet.png";
 import { Simulation } from "../simulation/Simulation";
+import { QueueItem, QueueItemState, SubmissionQueue } from "../SubmissionQueue";
 import { ScoreboardView } from "./ScoreboardView";
 
 interface SubmissionsViewState {
@@ -150,34 +150,48 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         if (!this.state.level) {
             return <p>Loading submissions...</p>;
         }
-        // TODO: show scoreboard only on closed levels?
-        if (/*this.state.levelClosed &&*/ this.state.simulatingItemIndex >= this.state.queueItems.length) {
-            return <ScoreboardView />;
+        if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
+            if(this.state.levelClosed) {
+                return <ScoreboardView />;
+            }
+            return <Simulation
+                        initialState={this.state.level}
+                        onSimulationEnd={()=>{}}
+                        speed={0}
+                        spritesheet={this.state.spritesheet}
+                        steps={[{objects: this.state.level.objects}]}
+                    />;
         }
         const currentQueueItem =
             this.state.simulatingItemIndex < this.state.queueItems.length
                 ? this.state.queueItems[this.state.simulatingItemIndex]
                 : undefined;
         return (
-            <div>
-                <div>
-                    <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}>Previous</button>
-                    <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}>Next</button>
-                    <button onClick={() => this.simulateNext()}> Skip to end</button>
+            <div className="container-fluid" style={{border: "1px solid red"}}>
+                <div className="row">
+                    <div className="col-3">
+                        <div>
+                            <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}>Previous</button>
+                            <button onClick={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}>Next</button>
+                            <button onClick={() => this.simulateNext()}> Skip to end</button>
+                        </div>
+                        <SubmissionQueue items={this.state.queueItems.slice(this.state.simulatingItemIndex)} />
+                    </div>
+                    <div className="col-9">
+                        {
+                            currentQueueItem && currentQueueItem.details
+                                ?
+                                <Simulation
+                                    initialState={currentQueueItem.details.initialState}
+                                    onSimulationEnd={() => this.simulateNext()}
+                                    speed={10}
+                                    spritesheet={this.state.spritesheet}
+                                    steps={currentQueueItem.details.steps}
+                                />
+                                : <p>Loading simulation...</p>
+                        }
+                    </div>
                 </div>
-                <SubmissionQueue items={this.state.queueItems.slice(this.state.simulatingItemIndex)} />
-                {
-                    currentQueueItem && currentQueueItem.details
-                        ?
-                        <Simulation
-                            initialState={currentQueueItem.details.initialState}
-                            onSimulationEnd={() => this.simulateNext()}
-                            speed={10}
-                            spritesheet={this.state.spritesheet}
-                            steps={currentQueueItem.details.steps}
-                        />
-                        : <p>Loading simulation...</p>
-                }
             </div>
         );
     }
