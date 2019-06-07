@@ -228,21 +228,39 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
                         />
                     </div>
                     <div className="col-9" id="simulation-container">
-                        {this.state.simulatingItemIndex >= this.state.queueItems.length && this.state.levelClosed 
-                            ?
-                                <ScoreboardView />
-                            : (currentQueueItem && currentQueueItem.details
-                                ?
-                                <Simulation
-                                    initialState={currentQueueItem.details.initialState}
-                                    onSimulationEnd={onSimulationEnd}
-                                    speed={speed}
-                                    spritesheet={spritesheet}
-                                    steps={currentQueueItem.details.steps}
-                                    startingStep={this.state.startingStepIndex}
-                                />
-                                : <Loader />)
+                        {currentQueueItem && currentQueueItem.details
+                        ?
+                        <Simulation
+                            initialState={currentQueueItem.details.initialState}
+                            onSimulationEnd={onSimulationEnd}
+                            speed={speed}
+                            spritesheet={spritesheet}
+                            steps={currentQueueItem.details.steps}
+                            startingStep={this.state.startingStepIndex}
+                        />
+                        : <Loader />
                         }
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    renderScoreboard() {
+        return (
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-3" id="submissions-queue-container">
+                            <SubmissionQueueControls
+                                onPrevious={() => this.setSimulationIndex(this.state.simulatingItemIndex - 1)}
+                                onNext={() => this.setSimulationIndex(this.state.simulatingItemIndex + 1)}
+                                onFastForward={() => this.fastForward()}
+                            />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12" id="simulation-container">
+                        <ScoreboardView />
                     </div>
                 </div>
             </div>
@@ -258,7 +276,7 @@ export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
         }
         if (this.state.simulatingItemIndex >= this.state.queueItems.length) {
             if(this.state.levelClosed) {
-                return this.renderSimulation(this.state.spritesheet, ()=>{}, 0, false);
+                return this.renderScoreboard();
             }
             const staticItem: QueueItem = {
                 details: {
