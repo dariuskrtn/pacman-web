@@ -2,7 +2,7 @@ import React from "react";
 import { Scoreboard } from "../api/Contracts";
 
 interface ScoreboardProps {
-    scoreboard: Scoreboard
+    scoreboard: Scoreboard;
 }
 
 // TODO: styling
@@ -13,7 +13,7 @@ export const ScoreboardTable = (props: ScoreboardProps) => (
             <tr>
                 <th>User</th>
                 <th>Solved</th>
-                <th>Tie-Breaker</th>
+                <th>Penalty</th>
             </tr>
             {props.scoreboard.entries.map((row, i) => (
                 <tr key={i}>
