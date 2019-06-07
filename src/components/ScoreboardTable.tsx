@@ -9,17 +9,19 @@ interface ScoreboardProps {
 export const ScoreboardTable = (props: ScoreboardProps) => (
     <div>
         <h2>{props.scoreboard.title}</h2>
-        <table style={{ border: "1px solid black" }}>
-            <thead>
+        <table className="table table-bordered">
+            <thead className="thead-light">
                 <tr>
-                    <th>User</th>
-                    <th>Solved</th>
-                    <th>Penalty</th>
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Solved</th>
+                    <th scope="col">Penalty</th>
                 </tr>
             </thead>
             <tbody>
                 {props.scoreboard.entries.map((row, i) => (
                     <tr key={i}>
+                        <th scope="row">{i+1}</th>
                         <td>{row.user}</td>
                         <td>{row.solved}</td>
                         <td>{row.tieBreaker}</td>
