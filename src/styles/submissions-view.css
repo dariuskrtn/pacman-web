@@ -1,15 +1,27 @@
 #submissions-view-container, #submissions-view-container > div.row {
-    height: 100vh;
+    height: 99vh;
+}
+
+#submissions-view-container > div.row > div {
+    height: 100%;
 }
 
 #submissions-queue-container {
     /* border-right: 1px solid black; */
     padding-left: 0;
     padding-right: 0;
+    overflow-y: auto;
+}
+
+#submissions-queue-container .list-group {
+    overflow-y: auto;
 }
 
 .btn-group.submission-queue-controls {
     display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
 
 .submission-queue-controls .btn {

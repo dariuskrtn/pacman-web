@@ -12,21 +12,21 @@ export const SubmissionQueueControls = (props: SubmissionQueueControlsProps) => 
     <div className="btn-group submission-queue-controls" role="group">
         <button
             type="button"
-            className="btn btn-outline-dark"
+            className="btn btn-light"
             onClick={props.onPrevious}
         >
             <FontAwesomeIcon icon={faArrowUp} />
         </button>
         <button
             type="button"
-            className="btn btn-outline-dark"
+            className="btn btn-light"
             onClick={props.onNext}
         >
             <FontAwesomeIcon icon={faArrowDown} />
         </button>
         <button
             type="button"
-            className="btn btn-outline-dark"
+            className="btn btn-light"
             onClick={props.onFastForward}
         >
             <FontAwesomeIcon icon={faForward} />
