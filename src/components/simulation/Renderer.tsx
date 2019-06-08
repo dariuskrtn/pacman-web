@@ -80,7 +80,7 @@ export class Renderer extends React.Component<RendererProps, RendererState> {
 
     showStepCount(ctx: CanvasRenderingContext2D) {
         ctx.font = "50px Courier New";
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "red";
         ctx.textBaseline = "bottom";
         // const text = `steps = ${this.props.stepIndex.toString()}`;
         const text = this.props.stepIndex.toString();
