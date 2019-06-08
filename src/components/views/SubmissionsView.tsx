@@ -21,7 +21,7 @@ interface SubmissionsViewState {
 }
 
 const POLL_PERIOD = 2000;
-const SHOW_OUTCOME_DURATION = 3000;
+const SHOW_OUTCOME_DURATION = 1000;
 
 export class SubmissionsView extends React.Component<{}, SubmissionsViewState> {
     state: SubmissionsViewState = {
