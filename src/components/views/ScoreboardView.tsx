@@ -30,7 +30,7 @@ export class ScoreboardView extends React.Component<{}, ScoreboardViewState> {
         }
         return <div className="row scoreboard">
                     {this.state.scoreboards.map((s, i) => (
-                        <div className="col-md-3">
+                        <div className="col-md-6">
                             <ScoreboardTable key={i} scoreboard={s} />
                         </div>
                     ))}
